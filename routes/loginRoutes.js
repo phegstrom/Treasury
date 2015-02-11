@@ -4,7 +4,6 @@ var router = require('express').Router();
 
 
 router.get('/', requireLogin, function(req, res, next) {
-  console.log(req.user);
   res.render('dashboard', {user: req.user});
 });
 

@@ -15,7 +15,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 
 var loginRoutes = require('./routes/loginRoutes');
-
+var oathRoutes = require('./routes/oathRoutes');
 
 var app = express();
 
@@ -87,8 +87,8 @@ mongoose.connect(dbString, function(err) {
 
 // hard coded user values
 
-var Venmo_Client_ID = '--insert your venmo clientId here--';
-var Venmo_Client_SECRET = '--insert venmo clientSecret here--';
+var Venmo_Client_ID = '2360';
+var Venmo_Client_SECRET = 'eakFc2jPuHjvZWe3ULGKsdB7Tg4kvEH3';
 var Venmo_Callback_URL = 'http://localhost:3000/auth/venmo/callback';
 
 
@@ -113,6 +113,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', loginRoutes);
+app.use('/auth', oathRoutes);
 
 function requireLogin (req, res, next) {
   if (!req.user) {
