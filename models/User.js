@@ -7,7 +7,8 @@ var mongoose = require('mongoose'),
 // note other fields are created by the .plugin() method below
 var UserSchema = new Schema({
 	name: String,
-	username: {type: String, default: null},
+	venmo_username: {type: String, default: null},
+	venmo_id: {type: String, default: null},
 	userGroups: [{type: Schema.Types.ObjectId, ref: 'UserGroup'}],
     access_token: {type: String, default: null},
     refresh_token: {type: String, default: null},
