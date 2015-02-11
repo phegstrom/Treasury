@@ -38,14 +38,16 @@ app.use(session({
   cookieName: 'session',
   secret: 'eg[isfd-8yF9-7w2315df{}+Ijsli;;to8',
   duration: 10 * 60 * 1000, // how long the session will stay valid in ms
-  activeDuration: 10 * 60 * 1000,
-  httpOnly: true,
-  secure: true,
-  ephemeral: true
+  activeDuration: 10 * 60 * 1000, // extended value (here initial will be 10 + 10 min)
+  cookie: {
+      ephemeral: true, // when true, cookie expires when the browser closes
+      httpOnly: true, // when true, cookie is not accessible from javascript
+      secure: false // can't be true if using LOCALHOST
+    }
 }));
 
 app.use(passport.initialize());
-//app.use(passport.session());
+app.use(passport.session());
 
 var User = require('./models/User');
 
@@ -87,20 +89,17 @@ mongoose.connect(dbString, function(err) {
 
 // hard coded user values
 
-var Venmo_Client_ID = '2360';
-var Venmo_Client_SECRET = 'eakFc2jPuHjvZWe3ULGKsdB7Tg4kvEH3';
-var Venmo_Callback_URL = 'http://localhost:3000/auth/venmo/callback';
 
 
 
-// handles cookie auth, session vars
+// handles cookie auth, session vars for EVERY request
 app.use(function(req, res, next) {
   if (req.session && req.session.user) {
     User.findOne({ email: req.session.user.email }, function(err, user) {
       if (user) {
         req.user = user;
-        delete req.user.salt; // delete the password from the session
-        delete req.user.hash;
+        // delete req.user.salt; // delete the password from the session
+        // delete req.user.hash;
         req.session.user = req.user;  //refresh the session value
         res.locals.user = user;
       }
@@ -113,7 +112,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', loginRoutes);
-app.use('/auth', oathRoutes);
+app.use('/auth', requireLogin, oathRoutes);
 
 function requireLogin (req, res, next) {
   if (!req.user) {
