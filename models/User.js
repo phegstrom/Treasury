@@ -12,6 +12,7 @@ var UserSchema = new Schema({
 	userGroups: [{type: Schema.Types.ObjectId, ref: 'UserGroup'}],
     access_token: {type: String, default: null},
     refresh_token: {type: String, default: null},
+    expires_in: {type: Number, default: null},
     venmo: {},    	
 	dateCreated: {type: Date, default: Date.now}
 }, {collection: collectionName});
