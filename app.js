@@ -13,7 +13,7 @@ var fs = require('fs');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-
+// importing route files
 var loginRoutes = require('./routes/loginRoutes');
 var oathRoutes = require('./routes/oathRoutes');
 
