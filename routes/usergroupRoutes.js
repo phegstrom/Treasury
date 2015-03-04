@@ -33,11 +33,11 @@ router.get('/:uGroupId', function (req, res, next) {
 router.delete('/:uGroupId', function (req, res, next) {
 
 	// POSTman testing purposes
-	var uid = req.session.user._id;
-	// var uid = "54dadb440f91335218191cb1";
+	// var uid = req.session.user._id;
+	var uid = "54f77ab79ba3e5890a6f62cf";
 
 	UserGroup.findOne({_id: req.params.uGroupId}, function (err, uGroup) {
-		User.findOneAndUpdate({_id: uid}, {$pull: {userGroups: uGroup._id}}, function (err, numAFfected) {
+		User.findOneAndUpdate({_id: uid}, {$pull: {userGroups: uGroup._id}}, function (err, numAffected) {
 			uGroup.remove();
 			res.send('user group deleted');
 		})
@@ -50,10 +50,11 @@ router.delete('/:uGroupId', function (req, res, next) {
 router.post('/', function (req, res, next) {
 	var userArray = req.body.members;
 	var groupName = req.body.name;
-
+	console.log(req.body);
 	// POSTman testing purposes
-	var uid = req.session.user._id;
-	// var uid = "54dadb440f91335218191cb1";
+
+	// var uid = req.session.user._id;
+	var uid = "54f77ab79ba3e5890a6f62cf";
 
 	var uGroup = new UserGroup({name: groupName, members: userArray});
 

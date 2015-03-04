@@ -16,6 +16,7 @@ router.get('/', function (req, res, next) {
 	res.redirect(urlString);
 });
 
+
 // venmo redirect URL issues GET request here with code=secretCode
 router.get('/venmo/callback', function (req, res, next) {
 	if (req.query.error) res.redirect('/'); // if user denies access

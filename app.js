@@ -17,6 +17,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var loginRoutes = require('./routes/loginRoutes');
 var oathRoutes = require('./routes/oathRoutes');
 var usergroupRoutes = require('./routes/usergroupRoutes');
+var chargeRoutes = require('./routes/chargeRoutes');
 
 var app = express();
 
@@ -82,17 +83,6 @@ mongoose.connect(dbString, function(err) {
     }
 });
 
-// for venmo OAuth
-
-
-// for login sessions
-
-
-// hard coded user values
-
-
-
-
 // handles cookie auth, session vars for EVERY request
 app.use(function(req, res, next) {
   if (req.session && req.session.user) {
@@ -115,6 +105,8 @@ app.use(function(req, res, next) {
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
 app.use('/usergroup', usergroupRoutes);
+app.use('/charge', chargeRoutes);
+
 
 function requireLogin (req, res, next) {
   if (!req.user) {
