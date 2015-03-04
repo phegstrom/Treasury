@@ -16,6 +16,7 @@ var LocalStrategy = require('passport-local').Strategy;
 // importing route files
 var loginRoutes = require('./routes/loginRoutes');
 var oathRoutes = require('./routes/oathRoutes');
+var usergroupRoutes = require('./routes/usergroupRoutes');
 
 var app = express();
 
@@ -113,6 +114,7 @@ app.use(function(req, res, next) {
 
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
+app.use('/usergroup', usergroupRoutes);
 
 function requireLogin (req, res, next) {
   if (!req.user) {

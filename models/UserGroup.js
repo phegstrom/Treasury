@@ -4,7 +4,10 @@ var collectionName = 'usergroupsC';
 
 var UserGroupSchema = new Schema({
 	name: String,
-	users: [String]
+	members: [{
+		displayName: String,
+		phoneNumber: String
+	}]
 }, {collection: collectionName});
 
 module.exports = mongoose.model('UserGroup', UserGroupSchema);
