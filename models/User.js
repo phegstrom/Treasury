@@ -20,6 +20,7 @@ var UserSchema = new Schema({
 }, {collection: collectionName});
 
 var options = {usernameField: 'email'};
+
 UserSchema.plugin(passportLocalMongoose, options);
 
 module.exports = mongoose.model('User', UserSchema);

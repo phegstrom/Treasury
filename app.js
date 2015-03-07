@@ -89,23 +89,30 @@ app.use(function(req, res, next) {
     User.findOne({ email: req.session.user.email }, function(err, user) {
       if (user) {
         req.user = user;
-        // delete req.user.salt; // delete the password from the session
-        // delete req.user.hash;
         req.session.user = req.user;  //refresh the session value
         res.locals.user = user;
       }
       next();
     });
   } else {
-
     next();
   }
 });
 
+// load route middleware
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
 app.use('/usergroup', usergroupRoutes);
-app.use('/charge', chargeRoutes);
+app.use('/charge', postMANTest, chargeRoutes);
+
+
+// ADD postManTest to app.use() line
+// insert specific user id here when testing with POSTman
+function postMANTest(req, res, next) {
+  req.session = {user: {_id: "54dadb440f91335218191cb1",
+                        access_token: '6Ntds67DS8VecVUh8aFTYAd3TNe4RmEH'}};
+  next();
+}
 
 
 function requireLogin (req, res, next) {
