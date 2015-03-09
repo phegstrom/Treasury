@@ -103,6 +103,7 @@ app.use(function(req, res, next) {
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
 app.use('/usergroup', usergroupRoutes);
+// app.use('/charge', chargeRoutes);
 app.use('/charge', postMANTest, chargeRoutes);
 
 

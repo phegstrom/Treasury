@@ -3,6 +3,9 @@ var mongoose = require('mongoose'),
     passportLocalMongoose = require('passport-local-mongoose');
     collectionName = "usersC";
 
+var deepPopulate = require('mongoose-deep-populate');
+    
+
 
 // note: other fields (email) are created by the .plugin() method below
 var UserSchema = new Schema({
@@ -22,5 +25,8 @@ var UserSchema = new Schema({
 var options = {usernameField: 'email'};
 
 UserSchema.plugin(passportLocalMongoose, options);
+
+UserSchema.plugin(deepPopulate);
+
 
 module.exports = mongoose.model('User', UserSchema);
