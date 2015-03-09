@@ -301,6 +301,11 @@ function createSingleFunction (s) {
 router.delete('/:chargeId', function (req, res, next){
 	Charge.findOne({_id: req.params.chargeId}, function (err, charge) {
 		User.findOneAndUpdate({_id: req.session.user._id}, {$pull: {myCharges: charge._id}}, function (err, numAffected) {
+			var transIds = charge.transactions;
+			transIds.forEach(function (transaction) {
+				Transaction.findByIdAndRemove({_id: transaction}, function (err, numAff) {
+				});
+			});
 			charge.remove();
 			res.send('charge deleted');
 		})
