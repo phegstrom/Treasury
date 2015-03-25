@@ -10,7 +10,7 @@ var _ = require('underscore');
 
 var BASE_URL = 'https://sandbox-api.venmo.com/v1/payments';
 // var BASE_URL = 'https://api.venmo.com/v1/payments';
-
+	
 // return array of charges for a given user
 router.get('/', function (req, res, next) {
 	User.findOne({_id: req.session.user._id})
@@ -18,6 +18,17 @@ router.get('/', function (req, res, next) {
 		.exec(function (err, user) {		
 			res.send(user.myCharges);
 		});
+});
+
+// webhook endpoint used by venmo to send updates to our app
+router.get('/webhook', function (req, res, next) {
+	console.log('TESTING WEBHOOK');
+	if (req.query.venmo_challenge) {
+		console.log(req.venmo_challenge);
+		console.log('webhook established!');
+		res.send(req.query.venmo_challenge);
+	}
+	
 });
 
 // creates a charge in the system
@@ -43,13 +54,13 @@ router.post('/', function (req, res, next){
 			User.findOneAndUpdate({_id: uid}, {$push: {myCharges: saved._id}}, function (err, numAffected) {
 				req.charge = saved.toJSON();
 				req.charge.phoneNumbers = phoneArray;
-				next(); 
-				// res.redirect(307, 'issueCharge');
+				next(); // now ping venmo server				
 			});
 
 		});
 	});
 });
+
 
 // part of the route that issues the requests
 // req.charge holds the charge json object
@@ -116,6 +127,7 @@ function createFirstFunctionInArray(charge, venmoBody, index, transactionIds) {
 		request.post(BASE_URL, {form: venmoBody}, function (err, resp, receipt) {
 			console.log('received Venmo response ' + index);
 			receipt = JSON.parse(receipt);
+			
 
 			var transactionObject = {
 				phoneNumber: charge.phoneNumbers[index].phoneNumber,
@@ -130,7 +142,7 @@ function createFirstFunctionInArray(charge, venmoBody, index, transactionIds) {
 			if (err) 
 				transactionObject.errorMsg = err.message;
 
-			var trans = new Transaction(transactionObject);
+			var trans = new Transaction(transactionObject);			
 
 			trans.save(function (err, saved) {
 				transactionIds.push(saved._id);
@@ -182,89 +194,6 @@ function createOtherFunctionInArray(charge, venmoBody, index) {
 
 }
 
-// route for testing venmo chargin
-router.get('/test', function (req, res, next) {
-	// var a = [{name: 'Steve', number: 4}, {name: 's', number: 3}];
-	// var b = [{name: 'tate', number: 2}, {name: 'parker', number: 1}];;
-	// res.send(_.union(a, b));
-
-	// async.waterfall([
-	// 	function (next) {
-	// 		UserGroup.getUserIds(req.body.userGroupIds, function (err, ids) {
-	// 			usergroupIds = ids;
-	// 			next(err, ids);
-	// 		});
-	// 	},
-	// 	function (ids, nex) {
-	// 		User.toIds(req.body.userEmails, function (err, uids) {
-	// 			ssu.assocUsers = uids;
-	// 			ids = _.union(ids, uids);
-	// 			next(err, ids);
-	// 		});			
-	// 	}
-	// ]);
-
-
-	// var f = function (next) {
-	// 	res.redirect('/');
-	// }
-
-
-
-	// fnArray.push(f);
-
-	// 	console.log(fnArray);
-
-
-	// for (var i = 0; i < fnArray.length; i++) {
-	// 	console.log(fnArray[i]);
-	// 	fnArray[i]();
-	// }
-
-	var fnArray = createFunctionArray2(2);
-
-	async.waterfall(fnArray);
-
-	res.redirect('/');
-
-	// ------------- CODE FOR SINGLE CHARGE -------------
-
-	// var transactionIds = [];
-
-	// var body = {
-	// 	access_token: req.session.user.access_token,
-	// 	phone: '2488821795', // COMES FROM PHONE ARRAY, req.charge.phoneNumbers[i].phoneNumber
-	// 	note: 'sent from our app! but ignore', // req.charge.description
-	// 	amount: '-.20', // req.charge.individualTotal
-	// 	audience: 'private' // req.charge.audience
-	// };
-
-	// request.post(BASE_URL, {form: body}, function (err, resp, receipt) {
-
-	// 	receipt = JSON.parse(receipt);
-
-	// 	var transactionObject = {
-	// 		phoneNumber: req.charge.phoneNumbers[i].phoneNumber,
-	// 		paymentId: receipt.data.payment.id,
-	// 		note: receipt.data.payment.note,
-	// 		status: receipt.data.payment.status, // should be pending
-	// 		dateCreated: receipt.data.date_created,
-	// 		group: req.charge.phoneNumbers[i].groupId, 
-	// 		charge: req.charge._id
-	// 	};
-
-	// 	var trans = new Transaction(transactionObject);
-	// 	trans.save(function (err, saved) {
-	// 		transactionIds.push(saved._id);
-	// 		next(); // CALL WITH PARAMS..... TODO	
-	// 	})
-
-		
-	// });	
-
-	// ------------- END CODE FOR SINGLE CHARGE -------------
-
-});
 
 
 // issues the request for each phone number
@@ -298,6 +227,8 @@ function createSingleFunction (s) {
 }
 
 
+// deletes all transactions associated with a charge, then removes
+// the charge
 router.delete('/:chargeId', function (req, res, next){
 	Charge.findOne({_id: req.params.chargeId}, function (err, charge) {
 		User.findOneAndUpdate({_id: req.session.user._id}, {$pull: {myCharges: charge._id}}, function (err, numAffected) {
