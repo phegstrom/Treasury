@@ -61,9 +61,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-// for nodejitsu
-var dbString = '';
-
+// for heroku deployed mongolab
+var dbString = 'mongodb://heroku_app35230655:f1vl2ncjg2m7b26m4stl042svi@ds035448.mongolab.com:35448/heroku_app35230655'
+var dbString = 'mongodb://heroku_app35230655:f1vl2ncjg2m7b26m4stl042svi@ds035448.mongolab.com:35448/heroku_app35230655'
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
@@ -104,7 +104,7 @@ app.use(function(req, res, next) {
 // load route middleware
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
-app.use('/usergroup', usergroupRoutes);
+app.use('/usergroup', postMANTest, usergroupRoutes);
 // app.use('/charge', chargeRoutes);
 app.use('/charge', postMANTest, chargeRoutes); //requireLogin if not for testing RYAN
 
