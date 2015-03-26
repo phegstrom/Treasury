@@ -33,6 +33,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'app')));
 
 
 // cookie session stuffs
@@ -104,7 +106,7 @@ app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
 app.use('/usergroup', usergroupRoutes);
 // app.use('/charge', chargeRoutes);
-app.use('/charge', postMANTest, chargeRoutes);
+app.use('/charge', postMANTest, chargeRoutes); //requireLogin if not for testing RYAN
 
 
 // ADD postManTest to app.use() line

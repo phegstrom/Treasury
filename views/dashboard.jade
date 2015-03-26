@@ -1,9 +1,24 @@
 extends layout
 
 block content
-  if (user)
-    p You are currently logged in as #{user.name}. Authorize with Venmo account  <a href='/auth'>here</a>  
-  else
-    p You are currently not logged in. Please login or register...
+	if (user)
+		p You are currently logged in as #{user.name}. Authorize with Venmo account  <a href='/auth'>here</a>  
+	else
+		p You are currently not logged in. Please login or register...
+
+	#root
+		.row
+			.col-sm-9
+				p text here
+				#pageNav
+					.row
+						.col-sm-2
+							h4 Profile
+						.col-sm-2
+							h4 My Groups
+				#mainContainer
+			.col-sm-3
+				p text here also 
+
 
 

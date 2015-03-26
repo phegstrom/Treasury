@@ -8,7 +8,7 @@ var request = require('request');
 var async = require('async');
 var _ = require('underscore');
 
-var BASE_URL = 'https://sandbox-api.venmo.com/v1/payments';
+var BASE_URL = 'https://sandbox-api.venmo.com/v1/payments'; 
 // var BASE_URL = 'https://api.venmo.com/v1/payments';
 
 // return array of charges for a given user
