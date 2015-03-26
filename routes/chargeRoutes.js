@@ -195,7 +195,6 @@ function createOtherFunctionInArray(charge, venmoBody, index) {
 }
 
 
-
 // issues the request for each phone number
 function createFunctionArray2(numbers) {
 	var toRet = [];

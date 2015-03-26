@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'views')));
 app.use(express.static(path.join(__dirname, 'app')));
 
 
+
 // cookie session stuffs
 app.use(session({
   cookieName: 'session',
