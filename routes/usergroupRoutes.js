@@ -4,10 +4,12 @@ var router = require('express').Router();
 var User = require('../models/User');
 var UserGroup = require('../models/UserGroup');
 
+var config = require('../config/index');
 
-var Venmo_Client_ID = '2360';
-var Venmo_Client_SECRET = 'eakFc2jPuHjvZWe3ULGKsdB7Tg4kvEH3';
-var Venmo_Callback_URL = 'http://localhost:3000/auth/venmo/callback';
+// from config file
+var Venmo_Client_ID = config.Venmo_Client_ID;
+var Venmo_Client_SECRET = config.Venmo_Client_SECRET;
+var Venmo_Callback_URL = config.Venmo_Callback_URL;
 
 
 

@@ -5,15 +5,18 @@ var router = require('express').Router();
 var querystring = require('querystring');
 var User = require('../models/User');
 
-// from developers tab in venmo for this application
-var Venmo_Client_ID = '2360';
-var Venmo_Client_SECRET = 'eakFc2jPuHjvZWe3ULGKsdB7Tg4kvEH3';
-var Venmo_Callback_URL = 'http://localhost:3000/auth/venmo/callback';
+var config = require('../config/index');
+
+// from config file
+var Venmo_Client_ID = config.Venmo_Client_ID;
+var Venmo_Client_SECRET = config.Venmo_Client_SECRET;
+var Venmo_Callback_URL = config.Venmo_Callback_URL;
 
 
 router.get('/', function (req, res, next) {
-	var url = 'http://api.venmo.com/v1/oauth/authorize?';
-	var scopeString = 'make_payments access_profile access_email access_phone access_balance';
+	var url = config.Venmo_Auth_URL;
+	var scopeString = config.Venmo_scopeString;
+
 	var qString = {client_id: Venmo_Client_ID, scope: scopeString, response_type: 'code'};
 
 	res.redirect(url + querystring.stringify(qString));
@@ -23,7 +26,7 @@ router.get('/', function (req, res, next) {
 // venmo redirect URL issues GET request here with code=secretCode
 router.get('/venmo/callback', function (req, res, next) {
 	if (req.query.error) res.redirect('/'); // if user denies access
-	request.post('https://api.venmo.com/v1/oauth/access_token', 
+	request.post(config.Venmo_Auth_ACCESSTOKEN_URL, 
 		{form: {    client_id: Venmo_Client_ID,
     				client_secret: Venmo_Client_SECRET,
     				code: req.query.code}}, 

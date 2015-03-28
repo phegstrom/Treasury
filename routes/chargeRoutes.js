@@ -7,9 +7,9 @@ var mongoose	= require('mongoose');
 var request = require('request');
 var async = require('async');
 var _ = require('underscore');
+var config = require('../config/index');
 
-var BASE_URL = 'https://sandbox-api.venmo.com/v1/payments'; 
-// var BASE_URL = 'https://api.venmo.com/v1/payments';
+var BASE_URL = config.Venmo_BASE_URL;
 	
 // return array of charges for a given user
 router.get('/', function (req, res, next) {
@@ -19,6 +19,8 @@ router.get('/', function (req, res, next) {
 			res.send(user.myCharges);
 		});
 });
+
+
 
 // webhook endpoint used by venmo to send updates to our app
 router.get('/webhook', function (req, res, next) {
