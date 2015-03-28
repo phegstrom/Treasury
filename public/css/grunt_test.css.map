@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,IAAK;EACD,WAAW,EAAE,IAAI;EACjB,KAAK,EAAE,IAAQ;EACf,OAAO,EAAC,IAAI;;AAGhB,cAAY;EACR,WAAW,EAAE,KAAK;;AAGtB,EAAG;EACC,KAAK,EAAE,IAAI;;AAIX,UAAG;EACC,KAAK,EAAE,KAAK;;AAKnB,QAAE;EACD,IAAI,EAAE,IAAI;EACV,KAAK,EAAE,GAAG",
-"sources": ["../sass/grunt_test.scss"],
-"names": [],
-"file": "grunt_test.css"
-}

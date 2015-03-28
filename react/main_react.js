@@ -1,8 +1,7 @@
 /** @jsx React.DOM */
 /* global React */
 
-var Root = require("root.js").root;
-console.log(Root);
+var Root = require("/react/root").root;
 console.log("in main");
 
 React.renderComponent(
