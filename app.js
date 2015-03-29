@@ -13,6 +13,8 @@ var fs = require('fs');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
+var config = require('./config/index'); // require in config main file
+
 // importing route files
 var loginRoutes = require('./routes/loginRoutes');
 var oathRoutes = require('./routes/oathRoutes');
@@ -22,7 +24,7 @@ var chargeRoutes = require('./routes/chargeRoutes');
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views/'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
@@ -62,9 +64,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-// for heroku deployed mongolab
-var dbString = 'mongodb://heroku_app35230655:f1vl2ncjg2m7b26m4stl042svi@ds035448.mongolab.com:35448/heroku_app35230655'
-var dbString = 'mongodb://heroku_app35230655:f1vl2ncjg2m7b26m4stl042svi@ds035448.mongolab.com:35448/heroku_app35230655'
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
@@ -75,14 +74,13 @@ if (app.get('env') === 'development') {
             error: err
         });
     });
-    dbString = 'mongodb://localhost/Treasury';
 }
 
-mongoose.connect(dbString, function(err) {
+mongoose.connect(config.db_URL, function(err) {
     if(err) {
         console.log('connection error', err);
     } else {
-        console.log('connection to local DB successful');
+        console.log('connection to DB successful');
     }
 });
 
@@ -94,7 +92,7 @@ app.use(function(req, res, next) {
         req.user = user;
         req.session.user = req.user;  //refresh the session value
         res.locals.user = user;
-      }
+      } 
       next();
     });
   } else {

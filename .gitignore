@@ -30,9 +30,6 @@ bower_components
 node_modules
 data/db
 
-# Bower Dependencies
-bower_components
-
 # MongoDB Data? (using the data folder in this folder for the database)
 data
 
