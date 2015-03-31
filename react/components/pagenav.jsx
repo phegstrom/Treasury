@@ -2,8 +2,8 @@
 /* global React */
 "use strict";
 
-var ProfileComp = require("./profile").ProfileComp;
-var GroupComp = require("./group").GroupComp;
+// var ProfileComp = require("./profile").ProfileComp;
+// var GroupComp = require("./group").GroupComp;
 
 
 

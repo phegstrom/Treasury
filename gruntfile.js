@@ -82,15 +82,17 @@ module.exports = function(grunt){
 					ext: '.min.js'
 				}]
 			}
-		}
-		
+		}		
 	});
 
+	// grunt.loadNpmTasks('grunt-nodemon');
+	grunt.loadNpmTasks('grunt-browserify');
+	grunt.loadNpmTasks('grunt-react');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.registerTask('default', ['watch', 'sass', 'concat', 'uglify', 'cssmin']);
+	grunt.registerTask('default', ['watch', 'sass', 'concat', 'uglify', 'cssmin', 'browserify']);
 
 };
