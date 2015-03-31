@@ -13,15 +13,26 @@ module.exports = function(grunt){
                 tasks: ['browserify']
             }
 		},
-		browserify: {
-			options: {
-				transform: [ require('grunt-react').browserify ]
-		    },
-		    client: {
-				src: ['./react/components/root.jsx'],
-				dest: './public/scripts/react/bundle.js'
-		    }
-		},
+        browserify: {
+            options: {
+                debug: true ,
+                extensions: [ '.jsx' ],
+                transform: [ 'reactify' ]
+            },
+            hello: {
+                src: ['./react/**/*.jsx'],
+                dest: './public/scripts/react/bundle.js'
+            }
+        },		
+		// browserify: {
+		// 	options: {
+		// 		transform: [ require('grunt-react').browserify ]
+		//     },
+		//     client: {
+		// 		src: ['./react/components/root.jsx'],
+		// 		dest: './public/scripts/react/bundle.js'
+		//     }
+		// },
 		sass: {
 			dist:{
 				files: [{
