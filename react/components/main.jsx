@@ -6,6 +6,7 @@ var Root = require("./root.jsx");
 
 
 React.render(
+	
   <Root />,
   document.getElementById("root")
 );

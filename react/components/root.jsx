@@ -11,7 +11,7 @@ var Root = React.createClass({
     return (
       <p>
         Hello, ther
-        It is Hello React Plese!
+        It is Hello React Please!
       </p>
     );
   }

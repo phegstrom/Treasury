@@ -20,8 +20,6 @@ router.get('/', function (req, res, next) {
 		});
 });
 
-
-
 // webhook endpoint used by venmo to send updates to our app
 router.get('/webhook', function (req, res, next) {
 	console.log('TESTING WEBHOOK');

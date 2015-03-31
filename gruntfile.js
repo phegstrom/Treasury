@@ -20,7 +20,7 @@ module.exports = function(grunt){
                 transform: [ 'reactify' ]
             },
             jsx: {
-                src: ['./react/**/*.jsx'],
+                src: ['./**/*.jsx'],
                 dest: './public/scripts/react/bundle.js'
             }
         },		
