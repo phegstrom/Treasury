@@ -25,8 +25,8 @@ build/Release
 #Bower Files
 bower_components
 
-# Converted bundle.js
-public/scripts/react/bundle.js
+#Converted bundle
+public/scripts/react
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
