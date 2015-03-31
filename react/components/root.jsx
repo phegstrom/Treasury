@@ -10,7 +10,7 @@ var Root = React.createClass({
   render: function() {
     return (
       <p>
-        Hello, ther
+        Hello, there
         It is Hello React Plese!
       </p>
     );
