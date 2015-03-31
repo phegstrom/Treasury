@@ -1,19 +1,20 @@
 /** @jsx React.DOM */
 /* global React */
 "use strict";
-var React = require('react');
+var React = require('../../public/bower_components/react/react');
 
 
 var Root = React.createClass({
-  console.log("hello from Root");
+  // console.log("hello from Root");
+
   render: function() {
     return (
       <p>
-        Hello, <input type="text" placeholder="Your name here" />!
-        It is Hello React
+        Hello, ther
+        It is Hello React Pleasww
       </p>
     );
   }
 });
 
-exports.root = Root;
+module.exports = Root;

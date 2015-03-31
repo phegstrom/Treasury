@@ -9,7 +9,7 @@ module.exports = function(grunt){
 				tasks: ['sass', 'cssmin']
 			},
 			react: {
-                files: 'react/**/*.jsx',
+                files: ['react/**/*.jsx'],
                 tasks: ['browserify']
             }
 		},
@@ -18,8 +18,8 @@ module.exports = function(grunt){
 				transform: [ require('grunt-react').browserify ]
 		    },
 		    client: {
-				src: ['react/**/*.jsx'],
-				dest: 'public/scripts/react/bundle.js'
+				src: ['./react/components/root.jsx'],
+				dest: './public/scripts/react/bundle.js'
 		    }
 		},
 		sass: {
@@ -93,6 +93,6 @@ module.exports = function(grunt){
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.registerTask('default', ['watch', 'sass', 'concat', 'uglify', 'cssmin', 'browserify']);
+	grunt.registerTask('default', ['watch']);
 
 };
