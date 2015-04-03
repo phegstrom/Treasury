@@ -24,15 +24,6 @@ module.exports = function(grunt){
                 dest: './public/scripts/react/bundle.js'
             }
         },		
-		// browserify: {
-		// 	options: {
-		// 		transform: [ require('grunt-react').browserify ]
-		//     },
-		//     client: {
-		// 		src: ['./react/components/root.jsx'],
-		// 		dest: './public/scripts/react/bundle.js'
-		//     }
-		// },
 		sass: {
 			dist:{
 				files: [{

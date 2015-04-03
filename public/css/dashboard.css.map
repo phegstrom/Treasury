@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,KAAK;EACJ,UAAU,EAAE,KAAK",
+"sources": ["../sass/dashboard.scss"],
+"names": [],
+"file": "dashboard.css"
+}
