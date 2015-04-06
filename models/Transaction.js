@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
     collectionName = "transactionsC";
-	states = 'pending fulfilled'.split(' ');
+	states = 'pending fulfilled cancelled'.split(' ');
 
 var deepPopulate = require('mongoose-deep-populate');
 
@@ -15,7 +15,8 @@ var TransactionSchema = new Schema({
 		dateCreated: {type: Date, default: Date.now},
 		group: {type: Schema.Types.ObjectId, ref: 'UserGroup'},
 		charge: {type: Schema.Types.ObjectId, ref: 'Charge'},
-		errorMsg: String
+		errorMsg: String,
+		userExists: {type: Boolean, default: true} // if phone number not a venmo user, then true
 }, {collection: collectionName});
 
 

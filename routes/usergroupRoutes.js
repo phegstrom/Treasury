@@ -3,6 +3,7 @@ var request = require('request')
 var router = require('express').Router();
 var User = require('../models/User');
 var UserGroup = require('../models/UserGroup');
+var _ = require('underscore');
 
 var config = require('../config/index');
 
@@ -29,6 +30,35 @@ router.get('/:uGroupId', function (req, res, next) {
 		res.send(uGroup);
 	});
 
+});
+
+// will delete a person from a group
+router.put('/deleteMembers/:uGroupId', function (req, res, next) {
+	var indivPhoneNumbers = req.body.phoneNumbers;
+	UserGroup.findOne({_id: req.params.uGroupId}, function (err, uGroup) {
+		var copyMembers = [];
+		for (var i = 0; i < uGroup.members.length; i++) {
+			var iOf = _.indexOf(indivPhoneNumbers, uGroup.members[i].phoneNumber);
+			if (iOf == -1) {
+				copyMembers.push(uGroup.members[i]);
+			}
+		}
+		uGroup.members = copyMembers;
+		uGroup.save(function (err, saved) {
+			res.send(saved);
+		});
+	});	
+});
+
+// will delete a person from a group
+router.put('/addMembers/:uGroupId', function (req, res, next) {
+	var newUsers = req.body.individuals;
+	UserGroup.findOne({_id: req.params.uGroupId}, function (err, uGroup) {
+		uGroup.members = _.union(uGroup.members, newUsers);
+		uGroup.save(function (err, saved) {
+			res.send(saved);
+		});
+	});	
 });
 
 // deletes a specific usergroup

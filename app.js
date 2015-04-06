@@ -85,6 +85,7 @@ mongoose.connect(config.db_URL, function(err) {
 });
 
 // handles cookie auth, session vars for EVERY request
+
 app.use(function(req, res, next) {
   if (req.session && req.session.user) {
     User.findOne({ email: req.session.user.email }, function(err, user) {
@@ -92,6 +93,31 @@ app.use(function(req, res, next) {
         req.user = user;
         req.session.user = req.user;  //refresh the session value
         res.locals.user = user;
+      } 
+      next();
+
+    });
+  } else {
+    next();
+  }
+});
+
+// handles if need to refresh access token
+app.use(function (req, res, next) {
+  if (req.session && req.session.user) {
+    User.findOne({ email: req.session.user.email }, function(err, user) {
+      if (user) {
+        var d = new Date();
+        if (d > user.tokenExpireDate) {  // if token has expire
+          refreshAccessToken(req, function (receipt) {
+            user.access_token = receipt.access_token;
+            user.refresh_token = receipt.refresh_token;
+            user.tokenExpireDate = getExpireDate(receipt.expires_in);
+            user.save(function (err, saved) {
+              next();
+            });
+          });
+        }
       } 
       next();
     });
@@ -104,7 +130,7 @@ app.use(function(req, res, next) {
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
 app.use('/usergroup', postMANTest, usergroupRoutes);
-// app.use('/charge', chargeRoutes);
+// app.use('/charge', requireLogin, chargeRoutes);
 app.use('/charge', postMANTest, chargeRoutes); //requireLogin if not for testing RYAN
 
 
@@ -124,6 +150,27 @@ function requireLogin (req, res, next) {
     next();
   }
 };
+
+function refreshAccessToken(req, cb) {
+
+  var body = {
+    client_id: config.Venmo_Client_ID,
+    client_secret: config.Venmo_Client_SECRET,
+    refresh_token: req.session.user.refresh_token
+  };
+
+  request.post(config.Venmo_BASE_URL, {form: body}, function (err, resp, receipt) {
+    receipt = JSON.parse(receipt);
+    cb(receipt);
+  });
+};
+
+function getExpireDate(secondCount) {
+  var myD = new Date()
+  var daysToExpire = secondCount / (60 * 60 * 24);
+  myD.setDate(myD.getDate() + daysToExpire);
+  return myD
+}
 
 
 // catch 404 and forward to error handler

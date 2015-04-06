@@ -35,11 +35,12 @@
 
 
 // var PageNav = React.createClass({
-//     handleClick: function(tabName, e) {
-// 	    e.preventDefault();
 
-// 	    alert('You clicked ' + tabName);
-//     },
+//     // handleClick: function(tabName, e) {
+// 	   //  e.preventDefault();
+
+// 	   //  alert('You clicked ' + tabName);
+//     // },
 
 
 
@@ -61,22 +62,24 @@
 // 	}, 
 // 	render: function() {
 // 		return (
-// 			<div className="PageNav">
-// 				<TabBox profileClicked={this.isProfileClicked} groupClicked={this.isGroupClicked}/>
+// 			// <p> hello </p>
+// 			<div>
+// 				<TabBox profileClicked={this.isProfileClicked} groupClicked={this.isGroupClicked} />
 // 				<div className="tab-content">
 					
 // 					<div className="tab-pane" id="profile-tab">
-// 						<section id="profile">
-// 							<ProfileComp>
-// 							//<SearchBox courses={this.state.courses} 
-// 							//handleSelected={this.searchResultSelected}/>
-// 						</section>
+// 						test text
+// 						// <section id="profile">
+// 						// 	<ProfileComp /> 
+// 						// 	<SearchBox courses={this.state.courses} 
+// 						// 	handleSelected={this.searchResultSelected}/>
+// 						// </section>
 // 					</div>
 
 
 // 					<div className="tab-pane" id="group-tab">
 // 						<section id="group">
-// 							<GroupComp>
+// 							//<GroupComp />
 // 							//<SelectList courses={this.state.selected} />
 // 						</section>
 // 					</div>
@@ -84,7 +87,7 @@
 // 			</div>
 // 		);
 // 	}
-// })
+// });
 
 
 
