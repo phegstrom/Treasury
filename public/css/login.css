@@ -1,4 +1,10 @@
-#myModal {
-  background-color: blue; }
+.navbar-brand img {
+  height: 20px; }
+
+.nav > li > a > img {
+  height: 12px; }
+
+.nav > li > a > span {
+  padding-left: 5px; }
 
 /*# sourceMappingURL=login.css.map */

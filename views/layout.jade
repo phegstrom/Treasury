@@ -4,25 +4,41 @@ html
     title Treasury
     link(rel='stylesheet', href='./bower_components/bootstrap/dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='./css/login.css') 
+    link(rel='stylesheet', href='./css/dashboard.css')
+    link(rel='stylesheet', href='./css/layout.css')
 
     block scripts
       script(src='./bower_components/jquery/dist/jquery.min.js')
       script(src='./bower_components/bootstrap/dist/js/bootstrap.min.js')
 
   body
-    .navbar.navbar-inverse.navbar-fixed-top
-      .navbar-inner
-        .container
-          a.brand(href="/") Treasury
-          ul.nav
-            if (typeof(user) == 'undefined')
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          .navbar-brand(href='#')
+            img(alt="Brand" src="./img/dollar-sign.jpg")
+        .collapse.navbar-collapse
+          span Project Name Here
+          if(user)
+            ul.nav.navbar-nav.navbar-right
               li
-                a(href="/login") Log In
-            else
-              li
-                a(href="/logout") Log Out
-              li
-                a(href="/query") Query Users
+                if(user)
+                  a(href="#") 
+                    img(alt="Venmo Authenticated" src="./img/checkmark.png") 
+                    span Venmo
+                else
+                  a(href="/auth") 
+                    span Connect with Venmo
+              li 
+                a(href="#") Signed in as #{user.name} 
+          else
+            ul.nav.navbar-nav.navbar-right
+              li Please Sign in
+
+
+
+           
+
 
 
     .container

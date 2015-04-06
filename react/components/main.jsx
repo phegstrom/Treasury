@@ -1,13 +1,12 @@
 /** @jsx React.DOM */
 /* global React */
-console.log("in main");
-var React = require('../../public/bower_components/react/react');
-var Root = require("./root.jsx");
+console.log("in main again");
+var React = require('../../public/bower_components/react/react.js');
+var TabBox = require("./pagenav.jsx");
 
 
 React.render(
-	
-  <Root />,
-  document.getElementById("root")
+  <TabBox />,
+  document.getElementById("mainContainer")
 );
 
