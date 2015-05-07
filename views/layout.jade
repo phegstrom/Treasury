@@ -22,12 +22,13 @@ html
           if(user)
             ul.nav.navbar-nav.navbar-right
               li
-                if(user)
+                if(user.isConnected)
                   a(href="#") 
                     img(alt="Venmo Authenticated" src="./img/checkmark.png") 
                     span Venmo
                 else
                   a(href="/auth") 
+                    img(alt="Venmo Not Authenticated" src="./img/x.svg") 
                     span Connect with Venmo
               li 
                 a(href="#") Signed in as #{user.name} 
