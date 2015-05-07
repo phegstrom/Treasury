@@ -172,19 +172,20 @@ function requireLogin (req, res, next) {
   }
 };
 
-function refreshAccessToken(req, cb) {
+// NEED TO FIND CORRECT URL TO PING
+// function refreshAccessToken(req, cb) {
 
-  var body = {
-    client_id: config.Venmo_Client_ID,
-    client_secret: config.Venmo_Client_SECRET,
-    refresh_token: req.session.user.refresh_token
-  };
+//   var body = {
+//     client_id: config.Venmo_Client_ID,
+//     client_secret: config.Venmo_Client_SECRET,
+//     refresh_token: req.session.user.refresh_token
+//   };
 
-  request.post(config.Venmo_BASE_URL, {form: body}, function (err, resp, receipt) {
-    receipt = JSON.parse(receipt);
-    cb(receipt);
-  });
-};
+//   request.post(config.Venmo_BASE_URL, {form: body}, function (err, resp, receipt) {
+//     receipt = JSON.parse(receipt);
+//     cb(receipt);
+//   });
+// };
 
 function getExpireDate(secondCount) {
   var myD = new Date()
