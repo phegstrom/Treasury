@@ -12,6 +12,7 @@ var session = require('client-sessions');
 var fs = require('fs');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var request = require('request');
 
 var config = require('./config/index'); // require in config main file
 
@@ -20,6 +21,7 @@ var loginRoutes = require('./routes/loginRoutes');
 var oathRoutes = require('./routes/oathRoutes');
 var usergroupRoutes = require('./routes/usergroupRoutes');
 var chargeRoutes = require('./routes/chargeRoutes');
+var webhookRoutes = require('./routes/webhookRoutes');
 
 var app = express();
 
@@ -103,28 +105,46 @@ app.use(function(req, res, next) {
 });
 
 // handles if need to refresh access token
-app.use(function (req, res, next) {
-  if (req.session && req.session.user) {
-    User.findOne({ email: req.session.user.email }, function(err, user) {
-      if (user) {
-        var d = new Date();
-        if (d > user.tokenExpireDate) {  // if token has expire
-          refreshAccessToken(req, function (receipt) {
-            user.access_token = receipt.access_token;
-            user.refresh_token = receipt.refresh_token;
-            user.tokenExpireDate = getExpireDate(receipt.expires_in);
-            user.save(function (err, saved) {
-              next();
-            });
-          });
-        }
-      } 
-      next();
-    });
-  } else {
-    next();
-  }
-});
+// app.use(function (req, res, next) {
+//   if (req.session && req.session.user) {
+//     User.findOne({ email: req.session.user.email }, function(err, user) {
+//       if (user) {
+//         var d = new Date();
+//         if (d > user.tokenExpireDate) {  // if token has expire
+//           refreshAccessToken(req, function (receipt) {
+//             user.access_token = receipt.access_token;
+//             user.refresh_token = receipt.refresh_token;
+//             user.tokenExpireDate = getExpireDate(receipt.expires_in);
+//             user.save(function (err, saved) {
+//               next();
+//             });
+//           });
+//         }
+//       } 
+//       next();
+//     });
+//   } else {
+//     next();
+//   }
+// });
+
+// app.use(function (req, res, next) {
+//     if (req.session && req.session.user) {
+//       User.findOne({ email: req.session.user.email }, function(err, user) {
+//         if (user) {
+//           var d = new Date();
+//           if (!user.access_token || d > user.tokenExpireDate) {
+//             user.isConnected = false;
+//           }
+//         } 
+//         next();
+
+//       });
+    
+//   } else {
+//     next();
+//   }
+// });
 
 // load route middleware
 app.use('/', loginRoutes);
@@ -132,13 +152,14 @@ app.use('/auth', requireLogin, oathRoutes);
 app.use('/usergroup', postMANTest, usergroupRoutes);
 // app.use('/charge', requireLogin, chargeRoutes);
 app.use('/charge', postMANTest, chargeRoutes); //requireLogin if not for testing RYAN
+app.use('/webhook', postMANTest, webhookRoutes);
 
 
 // ADD postManTest to app.use() line
 // insert specific user id here when testing with POSTman
 function postMANTest(req, res, next) {
   req.session = {user: {_id: "54dadb440f91335218191cb1",
-                        access_token: '6Ntds67DS8VecVUh8aFTYAd3TNe4RmEH'}};
+                        access_token: '9935b8cd1a9c0ab5c2c5ed7a2f285316a4f38fb565832045c1c1d2a2e236e708'}};
   next();
 }
 

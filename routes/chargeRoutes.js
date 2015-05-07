@@ -20,26 +20,12 @@ router.get('/', function (req, res, next) {
 		});
 });
 
-// webhook verification route, venmo uses this to verify webhook url
-router.get('/webhook', function (req, res, next) {
-	console.log('VERIFYING WEBHOOK');
-	if (req.query.venmo_challenge) {
-		console.log(req.query.venmo_challenge);
-		console.log('webhook established!');
-		res.status(200).send(req.query.venmo_challenge);
-	}
-
-	console.log('WEBHOOK TEST');
-	console.log(req.body);
-
-	
-});
-
-// webhook endpoint, venmo sends updates here
-router.post('/webhook', function (req, res, next) {
-	console.log('received webhook from venmo server...');
-	console.log(req.body);
-	res.status(200).send('received webhook');
+router.get('/transactions', function (req, res, next) {
+	Transaction.find().exec(function (err, trans) {
+		var d = new Date('2015-04-08T03:16:03');
+		console.log(d);
+		res.send(trans);
+	});	
 });
 
 // creates a charge in the system
@@ -54,7 +40,8 @@ router.post('/', function (req, res, next){
 							description: desc, 
 							individualTotal: indTotal, 
 							totalReceived: 0,
-							myGroups: groups
+							myGroups: groups,
+							audience: req.body.audience
 							});
 	
 	UserGroup.getMemberCount(groups, function (err, memberCount, phoneArray) {
@@ -87,7 +74,7 @@ router.post('/', function (req, res, next){
 
 // will add users to a charge after the charge has been initiated
 router.put('/:chargeId', function (req, res, next){
-	var newUsers = req.body.stuff;
+	var newUsers = req.body.targets;
 
 	Charge.findOne({_id: req.params.chargeId}, function (err, charge) {
 		charge.addedUsers = _.union(charge.addedUsers, newUsers);
@@ -152,7 +139,7 @@ function createWaterfallArray(req, res) {
 
 };
 
-// creates second venmo_charge function to send in waterfall
+// creates venmo_charge function to send in waterfall
 function createFunctionInArray(charge, venmoBody, index) {
 
 	var f = function(transactionIds, next) {
@@ -199,6 +186,7 @@ function createFunctionInArray(charge, venmoBody, index) {
 
 // deletes all transactions associated with a charge, then removes
 // the charge
+// used just for testing purposes
 router.delete('/:chargeId', function (req, res, next){
 	Charge.findOne({_id: req.params.chargeId}, function (err, charge) {
 		User.findOneAndUpdate({_id: req.session.user._id}, {$pull: {myCharges: charge._id}}, function (err, numAffected) {
@@ -225,7 +213,7 @@ function getPhoneNumberObject(members, groupId) {
 }
 
 // function that returns the first function variable for my waterfall
-// sequence when handling venmo requests
+// sequence when handling multiple async venmo requests
 function getInitialWaterfallFunction() {
 	var f = function (next) {
 		var transactionIds = [];

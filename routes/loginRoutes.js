@@ -14,7 +14,7 @@ router.get('/register', function(req, res) {
 
 router.post('/register', function(req, res, next) {
   console.log('registering user');
-  User.register(new User({ name: req.body.name, email: req.body.email}), req.body.password, function(err, acc) {
+  User.register(new User({ name: req.body.name, email: req.body.email, isConnected: false}), req.body.password, function(err, acc) {
     if (err) { console.log('error while user register!', err); return next(err); }
     res.redirect('/login');
   });
