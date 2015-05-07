@@ -47,7 +47,8 @@ router.get('/venmo/callback', function (req, res, next) {
 				userT.myBalance = receipt.balance;		
 				userT.venmo_id = receipt.user.id;
 				userT.tokenExpireDate = getExpireDate(receipt.expires_in);
-
+				userT.isConnected = true;
+				
 				userT.save(function (err, saved) {
 					res.redirect('/');
 				});

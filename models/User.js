@@ -19,7 +19,8 @@ var UserSchema = new Schema({
     refresh_token: {type: String, default: null},
     tokenExpireDate: Date,
     myCharges: [{type: Schema.Types.ObjectId, ref: 'Charge'}],
-	dateCreated: {type: Date, default: Date.now}
+	dateCreated: {type: Date, default: Date.now},
+    isConnected: Boolean
 }, {collection: collectionName});
 
 var options = {usernameField: 'email'};

@@ -10,6 +10,6 @@ conf.Venmo_scopeString = 'make_payments access_profile access_email access_phone
 
 /* ------------------- Choose Sandbox or Actual API ------------------*/
 conf.Venmo_BASE_URL = 'https://sandbox-api.venmo.com/v1/payments';
-//conf.Venmo_BASE_URL = 'https://api.venmo.com/v1/payments';
+// conf.Venmo_BASE_URL = 'https://api.venmo.com/v1/payments';
 
 module.exports = conf;
