@@ -23,7 +23,7 @@ var User = React.createClass({
 });
 
 
-// NEED TO START HERE!!!! CHANGE WHAT IT ITERATEST RHOUGH
+
 
 var UserList = React.createClass({
 	render: function() {
@@ -74,11 +74,17 @@ var UserInformationForm = React.createClass({
 
 	render: function() {
 		return (
-		  <form className="commentForm" onSubmit={this.handleSubmit}>
-		    <input className='form-control' type="text" placeholder="User's Name" ref="name" />
-		    <input className='form-control' type="text" placeholder="Phone Number..." ref="phoneNumber" />
+		  <form role="form" className="ui-form" onSubmit={this.handleSubmit}>
+		  	<div class='form-group'> 
+		    	<input className='form-control' type="text" placeholder="User's Name..." ref="name" />
+		    </div>
+		    <div class='form-group'> 
+		    	<input className='form-control' type="text" placeholder="User's Phone Number..." ref="phoneNumber" />
+		    </div>	 
 		    <input type="button" onClick={this.stageUser} className='btn btn-default' value="Add User To Group" />
-		    <input className='form-control' type="text" placeholder="Group Name..." ref="groupName" />
+		    <div class='form-group'> 
+		    	<input className='form-control' type="text" placeholder="Group Name..." ref="groupName" />
+		    </div>			    		   
 		   	<input type="submit" className='btn btn-primary' value="Create Group" /> <br/>
 		  </form>
 		);
@@ -140,7 +146,7 @@ var UserGroupCreator = React.createClass({
 	render: function() {
 		return (
 		  <div className="usergroup-form">
-		    <h1>Usergroup</h1>
+		    <h2>Create User Group</h2>
 		    <UserList data={this.state.data}/>
 		    <UserInformationForm setGroupName={this.setGroupName} createUserGroupFn={this.createUserGroup} addStagedUser={this.addStagedUser} />
 		  </div>

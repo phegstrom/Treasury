@@ -6,7 +6,11 @@ module.exports = function(grunt){
 		watch: {
 			sass:{
 				files: ['public/sass/**/*.scss'],
-				tasks: ['sass', 'cssmin']
+				tasks: ['sass', 'cssmin', 'concat']
+			},
+			js: {
+				files: ['public/js/*.js'],
+				tasks: ['concat:js']
 			},
 			react: {
                 files: ['react/**/*.jsx'],
@@ -58,17 +62,13 @@ module.exports = function(grunt){
 				stripBanners: true,
 				banner: '/*! <% pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'
 			},
-			/*dist:{
-				src: ['public/css/custom.css', 'public/css/custom2.css'],
-				dest: 'public/css/main.min.css'
-			},*/
 			css: {
 				src: ['public/css/min/*.min.css'],
 				dest: 'public/css/combined.min.css'
 			},
 			js: {
-				src: ['public/scripts/js/*.min.js'],
-				dest: 'public/scripts/combined.min.js'
+				src: ['public/js/*.js'],
+				dest: 'public/combined.min.js'
 			},
 		},
 		uglify: {
@@ -95,6 +95,7 @@ module.exports = function(grunt){
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+
 	grunt.registerTask('default', ['watch']);
 
 };

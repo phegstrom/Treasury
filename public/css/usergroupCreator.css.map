@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,QAAQ;EACP,SAAS,EAAE,KAAK",
+"sources": ["../sass/usergroupCreator.scss"],
+"names": [],
+"file": "usergroupCreator.css"
+}
