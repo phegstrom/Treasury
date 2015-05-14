@@ -6,7 +6,7 @@ module.exports = function(grunt){
 		watch: {
 			sass:{
 				files: ['public/sass/**/*.scss'],
-				tasks: ['sass', 'cssmin', 'concat']
+				tasks: ['sass', 'concat:css', 'cssmin']
 			},
 			js: {
 				files: ['public/js/*.js'],
@@ -39,32 +39,15 @@ module.exports = function(grunt){
 				}]
 			}
 		},
-		cssmin: {
-			my_target: {
-				files: [{
-					expand: true,
-					cwd: 'public/css/',
-					src: ['*.css', '!*.min.css'],
-					dest: 'public/css/min/',
-					ext: '.min.css'
-				}]
-				/* COMBINE INTO ONE FILE that is called destStyle.css
-				combine: {
-					files: {
-						'css/destStyle.css': ['css/style1.css', 'css/style2.css']
-					}
-				}*/
-			}
-		},
 		concat: {
 			options: {
-				separator: ";",
+				separator: "\n",
 				stripBanners: true,
 				banner: '/*! <% pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'
 			},
 			css: {
-				src: ['public/css/min/*.min.css'],
-				dest: 'public/css/combined.min.css'
+				src: ['public/css/*.css'],
+				dest: 'public/css/build/combined.css'
 			},
 			js: {
 				src: ['public/js/*.js'],
@@ -84,7 +67,18 @@ module.exports = function(grunt){
 					ext: '.min.js'
 				}]
 			}
-		}		
+		},
+		cssmin: {
+			target: {
+				files: [{
+					expand: true,
+					cwd: 'public/css/build',
+					src: ['*.css', '!*.min.css'],
+					dest: 'public/css/build/',
+					ext: '.min.css'
+				}]
+			}
+		}				
 	});
 
 	// grunt.loadNpmTasks('grunt-nodemon');
