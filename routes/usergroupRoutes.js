@@ -83,15 +83,14 @@ router.post('/', function (req, res, next) {
 	var userArray = req.body.members;
 	var groupName = req.body.name;
 	console.log(req.body);
-	// POSTman testing purposes
 
 	var uid = req.session.user._id;
-	// var uid = "54f77ab79ba3e5890a6f62cf";
 
 	var uGroup = new UserGroup({name: groupName, members: userArray});
 
 	// save uGroup to DB and push its _id onto users ugroup array
 	uGroup.save(function (err, saved) {
+		if (err) next(err);
 		User.findOneAndUpdate({_id: uid}, {$push: {userGroups: saved._id}}, function (err, numAFfected) {
 			res.send(saved);
 		});

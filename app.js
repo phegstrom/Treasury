@@ -146,13 +146,14 @@ app.use(function(req, res, next) {
 //   }
 // });
 
+
 // load route middleware
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
-app.use('/usergroup', postMANTest, usergroupRoutes);
+app.use('/usergroup', usergroupRoutes);
 // app.use('/charge', requireLogin, chargeRoutes);
-app.use('/charge', postMANTest, chargeRoutes); //requireLogin if not for testing RYAN
-app.use('/webhook', postMANTest, webhookRoutes);
+app.use('/charge', chargeRoutes); //requireLogin if not for testing RYAN
+app.use('/webhook', webhookRoutes);
 
 
 // ADD postManTest to app.use() line

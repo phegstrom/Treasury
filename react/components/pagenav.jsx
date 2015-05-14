@@ -62,4 +62,4 @@ var MainContainer = React.createClass({
 	}
 });
 
-exports.pagenav = TabBox;
+module.exports = TabBox;
