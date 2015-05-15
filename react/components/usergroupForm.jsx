@@ -12,11 +12,20 @@ var data = {
 };
 
 var User = React.createClass({
+
+
+	_removeUser: function(e) {
+		e.preventDefault();
+		this.props.removeStagedUser(this.props.userId);
+	},
+
 	render: function() {
 		return (
 		  <div className="staged-user">
-		    	<b>{this.props.displayName}: </b>
-		    	{this.props.phoneNumber}
+		    	<b>{this.props.displayName}: </b> {this.props.phoneNumber}
+		        <a href="#" onClick={this._removeUser}>
+		            <span className="glyphicon glyphicon-remove"></span>
+		        </a>	    	
 		  </div>
 		);
 	}
@@ -26,28 +35,38 @@ var User = React.createClass({
 
 
 var UserList = React.createClass({
+
+	_removeStagedUser: function(userId) {
+		console.log('next: ' + userId);
+		this.props.removeStagedUser(userId);
+	},
+
 	render: function() {
+		var userNodes = this.props.data.members.map(function (user, index) {
+			return (
+				<User 
+					removeStagedUser={this._removeStagedUser}
+					displayName={user.displayName}
+					phoneNumber={user.phoneNumber} 
+					userId={index} />
+			);
+		}.bind(this));
 
-	// create array of <User>
-
-	var userNodes = this.props.data.members.map(function (user) {
-	  return (
-	    <User displayName={user.displayName} phoneNumber={user.phoneNumber} />
-	  );
-	});
-
-	return (
-	  <div className="commentList">
-		{userNodes}
-	  </div>
-	);
+		return (
+		  <div className="commentList">
+			{userNodes}
+		  </div>
+		);
 	}
+
 });
 
 
 var UserInformationForm = React.createClass({
-	stageUser: function(e) {
+
+	_stageUser: function(e) {
 		e.preventDefault();
+
 		var name = React.findDOMNode(this.refs.name).value.trim();
 		var userPhoneNumber = React.findDOMNode(this.refs.phoneNumber).value.trim();
 		var groupName = React.findDOMNode(this.refs.groupName).value.trim();
@@ -65,23 +84,23 @@ var UserInformationForm = React.createClass({
 		return;
 	},
 
-	handleSubmit: function(e) {
+	_handleSubmit: function(e) {
 		e.preventDefault();
 		var groupName = React.findDOMNode(this.refs.groupName).value.trim();
-		this.props.createUserGroupFn(groupName);
+		this.props.createUserGroup(groupName);
 		React.findDOMNode(this.refs.groupName).value = '';		
 	},
 
 	render: function() {
 		return (
-		  <form role="form" className="ui-form" onSubmit={this.handleSubmit}>
+		  <form role="form" className="ui-form" onSubmit={this._handleSubmit}>
 		  	<div class='form-group'> 
 		    	<input className='form-control' type="text" placeholder="User's Name..." ref="name" />
 		    </div>
 		    <div class='form-group'> 
 		    	<input className='form-control' type="text" placeholder="User's Phone Number..." ref="phoneNumber" />
 		    </div>	 
-		    <input type="button" onClick={this.stageUser} className='btn btn-default' value="Add User To Group" />
+		    <input type="button" onClick={this._stageUser} className='btn btn-default' value="Add User To Group" />
 		    <div class='form-group'> 
 		    	<input className='form-control' type="text" placeholder="Group Name..." ref="groupName" />
 		    </div>			    		   
@@ -97,13 +116,11 @@ var UserGroupCreator = React.createClass({
 		return {data: {name: '', members: []}};
 	},
 
-
 	componentDidMount: function() {
 
 	},
 
-	createUserGroup: function(groupName) {
-		// ajax request to create user group in backend
+	_createUserGroup: function(groupName) {
 		console.log('heck for name...');
 		var usergroupObj = this.state.data;
 		usergroupObj.name = groupName;
@@ -112,6 +129,7 @@ var UserGroupCreator = React.createClass({
 			return;
 		}
 
+		// ajax request to create user group in backend
 		$.ajax({
 			type: 'POST',
 			url: '/usergroup',
@@ -134,10 +152,18 @@ var UserGroupCreator = React.createClass({
 	    var stagedUsers = this.state.data;
 	    var newArray = stagedUsers.members.concat([user]);
 	    stagedUsers.members = newArray;
+
 	    this.setState({data: stagedUsers});
 	},
 
-	setGroupName: function(ugroupName) {
+	_removeStagedUser: function(userId) {
+		var stagedUsers = this.state.data;
+		stagedUsers.members.splice(userId, 1);
+
+		this.setState({data: stagedUsers});
+	},
+
+	_setGroupName: function(ugroupName) {
 		var usergroup = this.state.data;
 		usergroup.name = ugroupName;
 		this.setState({data: usergroup});	
@@ -147,8 +173,13 @@ var UserGroupCreator = React.createClass({
 		return (
 		  <div className="usergroup-form">
 		    <h2>Create User Group</h2>
-		    <UserList data={this.state.data}/>
-		    <UserInformationForm setGroupName={this.setGroupName} createUserGroupFn={this.createUserGroup} addStagedUser={this.addStagedUser} />
+		    <UserList 
+		    	removeStagedUser={this._removeStagedUser} 
+		    	data={this.state.data} />
+		    <UserInformationForm 
+		    	setGroupName={this._setGroupName} 
+		    	createUserGroup={this._createUserGroup} 
+		    	addStagedUser={this.addStagedUser} />
 		  </div>
 		);
 	}
