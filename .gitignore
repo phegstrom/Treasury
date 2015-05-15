@@ -38,3 +38,6 @@ data
 
 # Debug log from npm
 npm-debug.log
+
+# DS STORE
+**/.DS_Store
