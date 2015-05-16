@@ -24,7 +24,7 @@ var chargeRoutes = require('./routes/chargeRoutes');
 var webhookRoutes = require('./routes/webhookRoutes');
 
 var app = express();
-console.log('');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views/'));
