@@ -20,6 +20,8 @@ router.get('/', function (req, res, next) {
 		});
 });
 
+console.log('');
+
 router.get('/transactions', function (req, res, next) {
 	Transaction.find().exec(function (err, trans) {
 		var d = new Date('2015-04-08T03:16:03');
