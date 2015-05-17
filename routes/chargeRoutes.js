@@ -20,7 +20,6 @@ router.get('/', function (req, res, next) {
 		});
 });
 
-console.log('');
 
 router.get('/transactions', function (req, res, next) {
 	Transaction.find().exec(function (err, trans) {

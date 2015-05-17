@@ -16,7 +16,7 @@ var TransactionSchema = new Schema({
 		group: {type: Schema.Types.ObjectId, ref: 'UserGroup'}, // will be NULL if appended to charge after initial creation of charge
 		charge: {type: Schema.Types.ObjectId, ref: 'Charge'},
 		errorMsg: String,
-		userExists: {type: Boolean, default: true} // if phone number not a venmo user, then true
+		userExists: {type: Boolean, default: true} // if phone number not a venmo user, then false
 }, {collection: collectionName});
 
 
