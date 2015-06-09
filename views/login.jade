@@ -3,14 +3,27 @@
 extends layout
 
 block content
-  h1 Welcome to Treasury! 
-  p.lead Don't have an account? Register <a href='/register'>here</a>
-  br
+  .container
+    .row
+      .col-sm-5
+        form(role='form', action="/login",method="post", style='max-width: 300px;')
+          .form-group
+            p Email:
+            input.form-control(type='text', name="email", placeholder='Enter Email')
+          .form-group
+            p Password:
+            input.form-control(type='password', name="password", placeholder='Password')
+          button.btn.btn-default(type='submit') Login
 
-  button(type="button" data-toggle="modal" data-target="#myModal").btn.btn-primary.btn-lg
-    p Sign In
 
+        button(type="button" data-toggle="modal" data-target="#myModal").btn.brand-button
+          p.lead Sign Up Now!
 
+      .col-sm-7
+        h3 Treasury simplifies group payments and makes it easy to see who has paid, who hasn't, how much money you have raised, and how close you are to reaching your goal.
+
+        h5 Insert Graphic Below
+        
   .modal.fade#myModal(tabindex="-1" role="dialog")
     .modal-dialog.modal-sm
       .modal-content
@@ -19,13 +32,23 @@ block content
             span(aria-hidden="true")
               &times
         .modal-body
-          form(role='form', action="/login",method="post", style='max-width: 300px;')
-            .form-group
-              p Email:
-              input.form-control(type='text', name="email", placeholder='Enter Email')
-            .form-group
-              p Password:
-              input.form-control(type='password', name="password", placeholder='Password')
-            button.btn.btn-default(type='submit') Login
-            a(href='/')
-              button.btn.btn-primary(type="button") Cancel 
+              p.lead Register your account below
+              br
+              form(role='form', action="/register",method="post", style='max-width: 300px;')
+                .form-group
+                    input.form-control(type='text', name="name", placeholder='John Doe')
+                .form-group
+                    input.form-control(type='text', name="email", placeholder='Enter Email')
+                .form-group
+                  input.form-control(type='password', name="password", placeholder='Password')
+                button.btn.btn-default(type='submit') Submit
+                a(href='/')
+                  button.btn.btn-primary(type="button") Cancel
+
+
+
+
+
+
+
+

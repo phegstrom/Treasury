@@ -77,7 +77,7 @@ router.delete('/:uGroupId', function (req, res, next) {
 
 });
 
-
+//POST - ryan
 // create a user group
 router.post('/', function (req, res, next) {
 	var userArray = req.body.members;
@@ -92,7 +92,7 @@ router.post('/', function (req, res, next) {
 	uGroup.save(function (err, saved) {
 		if (err) next(err);
 		User.findOneAndUpdate({_id: uid}, {$push: {userGroups: saved._id}}, function (err, numAFfected) {
-			res.send(saved);
+			res.send(saved); //send JSON response for userGroup -- Ryan
 		});
 	});
 });

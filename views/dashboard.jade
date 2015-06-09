@@ -1,13 +1,11 @@
 extends layout
 
-block content
-	if (user)
-		p You are currently logged in as #{user.name}. Authorize with Venmo account  <a href='/auth'>here</a>  
-	else
-		p You are currently not logged in. Please login or register...
+block content 
+	if (user && !(user.isConnected))
+		p You are currently logged in as #{user.name}. Authorize with Venmo account  <a href='/auth'>here</a>
+	else if (!user)
+		p You are currently not logged in. Please login or register... 
 
-	a(href='/logout')
-		button.btn.btn-primary(type="button") Logout
 
 
 	if(user.isConnected)
@@ -16,14 +14,7 @@ block content
 				.col-sm-8
 					#usergroup-container								
 					#pageNav
-						.row
-							.col-sm-2
-								h4 Profile
-							.col-sm-2
-								h4 Groups
-							.col-sm-2
-								h4 Charges
-					#mainContainer
+					#main-container
 	else
 
 

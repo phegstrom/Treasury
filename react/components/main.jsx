@@ -13,6 +13,6 @@ var Test = require('./root_test.jsx');
 
 React.render(
   <Test />,
-  document.getElementById("mainContainer")
+  document.getElementById("main-container")
 );
 

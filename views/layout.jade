@@ -6,6 +6,7 @@ html
 
 
     link(rel='stylesheet', href='./css/build/combined.min.css')
+    link(rel='stylesheet', href='./css/layout.css')
 
 
     block scripts
@@ -16,10 +17,11 @@ html
     nav.navbar.navbar-default
       .container-fluid
         .navbar-header
-          .navbar-brand(href='#')
-            img(alt="Brand" src="./img/dollar-sign.jpg")
+          .navbar-brand
+            a(href="#") 
+              #brand Treasury
+
         .collapse.navbar-collapse
-          span Project Name Here
           if(user)
             ul.nav.navbar-nav.navbar-right
               li
@@ -33,9 +35,14 @@ html
                     span Connect with Venmo
               li 
                 a(href="#") Signed in as #{user.name} 
+              li
+                a(href='/logout') Log Out
           else
             ul.nav.navbar-nav.navbar-right
-              li Please Sign in
+              li
+                a(href='/logout') Log Out
+              
+
 
 
 

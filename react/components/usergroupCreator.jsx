@@ -24,7 +24,7 @@ var User = React.createClass({
                 <b>{this.props.displayName}: </b> {this.props.phoneNumber}
                 <a href="#" id='delete-icon' onClick={this._removeUser}>
                     <span className="glyphicon glyphicon-remove"></span>
-                </a>            
+                </a>
           </div>
         );
     }
@@ -92,20 +92,30 @@ var UserInformationForm = React.createClass({
     },
 
     render: function() {
-        return (
-          <form role="form" className="ui-form" onSubmit={this._handleSubmit}>
-            <div class='form-group'> 
-                <input className='form-control' type="text" placeholder="User's Name..." ref="name" />
-            </div>
-            <div class='form-group'> 
-                <input className='form-control' type="text" placeholder="User's Phone Number..." ref="phoneNumber" />
-            </div>   
-            <input type="button" onClick={this._stageUser} className='btn btn-default' value="Add User To Group" />
-            <div class='form-group'> 
-                <input className='form-control' type="text" placeholder="Group Name..." ref="groupName" />
-            </div>                         
-            <input type="submit" className='btn btn-primary' value="Create Group" /> <br/>
-          </form>
+        return (  
+            <form role="form" className="ui-form" onSubmit={this._handleSubmit}>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-sm-4">
+                            <div class='form-group'> 
+                                <input className='form-control' type="text" placeholder="User's Name" ref="name" />
+                            </div>
+                            <div class='form-group'> 
+                                <input className='form-control' type="text" placeholder="User's Phone Number" ref="phoneNumber" />
+                            </div>   
+                            <input type="button" onClick={this._stageUser} className='btn btn-default btn-secondary' value="Add User To Group" />
+
+                        </div>
+
+                        <div className="col-sm-4">
+                            <div class='form-group'> 
+                                <input className='form-control' type="text" placeholder="Group Name" ref="groupName" />
+                            </div>                         
+                            <input type="submit" className='btn btn-default btn-secondary' value="Create Group" /> <br/>
+                        </div>
+                    </div>
+                </div>
+            </form>     
         );
     }
 });
@@ -132,10 +142,10 @@ var UserGroupCreator = React.createClass({
         // ajax request to create user group in backend
         $.ajax({
             type: 'POST',
-            url: '/usergroup',
-            data: JSON.stringify(usergroupObj),         
-            contentType: 'application/json; charset=UTF-8',
-            success: function(uGroup) {             
+            url: '/usergroup', //API request from Parker
+            data: JSON.stringify(usergroupObj),  //NEED THESE       
+            contentType: 'application/json; charset=UTF-8', //NEED THESE
+            success: function(uGroup) {  //line 95 from usergroupRoutes.js            
                 this.setState({data: {name: '', members: []}});
                 alert('usergroup created successfully!');
                 return;
@@ -172,7 +182,7 @@ var UserGroupCreator = React.createClass({
     render: function() {
         return (
           <div className="usergroup-form">
-            <h2>Create User Group</h2>
+            <h3>Create User Group</h3>
             <UserList 
                 removeStagedUser={this._removeStagedUser} 
                 data={this.state.data} />
