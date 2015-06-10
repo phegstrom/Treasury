@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
 /* global React */
 "use strict";
-var React = require('../../public/bower_components/react/react');
+var React = require('../../../public/bower_components/react/react');
+var RequestHandler = require('./ugroup.requestHandler');
 
 var data = {
     name: "Group 1",
@@ -86,6 +87,7 @@ var UserInformationForm = React.createClass({
 
     _handleSubmit: function(e) {
         e.preventDefault();
+        var x;
         var groupName = React.findDOMNode(this.refs.groupName).value.trim();
         this.props.createUserGroup(groupName);
         React.findDOMNode(this.refs.groupName).value = '';      
@@ -131,31 +133,24 @@ var UserGroupCreator = React.createClass({
     },
 
     _createUserGroup: function(groupName) {
-        console.log('heck for name...');
-        var usergroupObj = this.state.data;
+        var self = this;
+        var usergroupObj = self.state.data;
         usergroupObj.name = groupName;
         if (!usergroupObj.name || usergroupObj == '') {
             alert('need group name');
             return;
         }
 
-        // ajax request to create user group in backend
-        $.ajax({
-            type: 'POST',
-            url: '/usergroup', //API request from Parker
-            data: JSON.stringify(usergroupObj),  //NEED THESE       
-            contentType: 'application/json; charset=UTF-8', //NEED THESE
-            success: function(uGroup) {  //line 95 from usergroupRoutes.js            
-                this.setState({data: {name: '', members: []}});
-                alert('usergroup created successfully!');
-                return;
-            }.bind(this),
-            error: function() {
+        // issue POST request to server
+        RequestHandler.createUserGroup(usergroupObj, function (err, uGroup) {
+            if (err) {
                 alert('error creating group');
-                return;
-            }.bind(this)
+                return;    
+            }
+            self.setState({data: {name: '', members: []}});
+            alert('usergroup created successfully!');
+            return;
         });
-
     },
 
     _addStagedUser: function(user) {
