@@ -92,4 +92,10 @@ module.exports = function(grunt){
 
 	grunt.registerTask('default', ['watch']);
 
+	// individual commands that can be executed from command line
+	// type 'grunt <task alias name>'
+	grunt.registerTask('react', ['browserify']);
+	grunt.registerTask('css', ['sass', 'concat:css', 'cssmin']);
+	grunt.registerTask('build', ['browserify', 'sass', 'concat', 'cssmin']);
+
 };

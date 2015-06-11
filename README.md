@@ -8,8 +8,10 @@ Treasury
 * git clone this repo into your working directory  
 * cd into the project directory
 * You now must install the dependencies that are embedded within the project. Do so by typing
-
- `$ npm install`  
+ `$ npm install`
+* Finally, make sure all build files are compiled. Do so by typing  
+`$ grunt build`
+ 
 
 #### Running the app locally
  1. Navigate to the project directory
