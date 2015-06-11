@@ -2,8 +2,8 @@
 /* global React */
 console.log("in main again");
 var React = require('../../public/bower_components/react/react.js');
-var TabBox = require("./pagenav.jsx");
-var Test = require('./root_test.jsx');
+//var TabBox = require("./pagenav.jsx");
+var TabBox = require('./tab_box.jsx');
 
 
 // React.render(
@@ -12,7 +12,7 @@ var Test = require('./root_test.jsx');
 // );
 
 React.render(
-  <Test />,
+  <TabBox />,
   document.getElementById("main-container")
 );
 
