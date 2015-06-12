@@ -12,6 +12,9 @@ html
     block scripts
       script(src='./bower_components/jquery/dist/jquery.min.js')
       script(src='./bower_components/bootstrap/dist/js/bootstrap.min.js')
+      //- this loads initial data from the server and react can use it
+      script(id="initial-usergroupList" type="application/json").
+        !{usergroupList}
 
   body
     nav.navbar.navbar-default
@@ -54,7 +57,3 @@ html
       block content
 
 script(src="./scripts/react/bundle.js")
-
-
-
-

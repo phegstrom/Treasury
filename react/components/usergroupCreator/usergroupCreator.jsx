@@ -32,8 +32,6 @@ var User = React.createClass({
 });
 
 
-
-
 var UserList = React.createClass({
 
     _removeStagedUser: function(userId) {

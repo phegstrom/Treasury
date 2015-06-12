@@ -1,10 +1,15 @@
 var passport = require('passport');
 var User = require('../models/User');
+var UserGroup = require('../models/UserGroup');
 var router = require('express').Router();
 
 
 router.get('/', requireLogin, function(req, res, next) {
-  res.render('dashboard', {user: req.session.user});
+  User.findOne({_id: req.session.user._id}, 'userGroups')
+    .populate('userGroups')
+    .exec(function (err, user) {  
+      res.render('dashboard', {user: req.session.user, usergroupList: JSON.stringify(user.userGroups)});    
+    });  
 });
 
 
