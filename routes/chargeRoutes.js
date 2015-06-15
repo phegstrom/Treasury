@@ -7,6 +7,10 @@ var mongoose	= require('mongoose');
 var request = require('request');
 var async = require('async');
 var _ = require('underscore');
+
+// var io = require('socket.io').listen(require('../bin/www'));
+var io;
+var server = require('../bin/www');
 var config = require('../config/index');
 
 var BASE_URL = config.Venmo_BASE_URL;
@@ -18,6 +22,12 @@ router.get('/', function (req, res, next) {
 		.exec(function (err, user) {		
 			res.send(user.myCharges);
 		});
+});
+
+router.get('/test', function (req, res, next) {
+	console.log('this is io');
+	console.log(server);
+	res.redirect('/');
 });
 
 
@@ -36,6 +46,8 @@ router.post('/', function (req, res, next){
 	var groups = req.body.groupIDs;
 
 	var uid = req.session.user._id;
+
+	if (indTotal > 0) indTotal *= -1; // make sure charge total is neg.
 
 	var charge = new Charge({							
 							description: desc, 
@@ -89,6 +101,7 @@ router.put('/:chargeId', function (req, res, next){
 
 			var fnArray = createWaterfallArray(req, res);
 
+			// execute the functions
 			async.waterfall(fnArray);
 
 		});
@@ -130,6 +143,11 @@ function createWaterfallArray(req, res) {
 	var lastFunction = function (transactionIds) {
 		Charge.findOneAndUpdate({_id: req.charge._id}, {$pushAll: {transactions: transactionIds}}, function (err, charge){
 			console.log('finalized charges!!');
+
+			// TODO: Parker
+			// do a deep populate on the charge object then send
+			// with io socket
+			io.emit('chargeCreated', charge); // for live update on client
 			res.send(charge);
 		}); 
 	};
@@ -224,3 +242,6 @@ function getInitialWaterfallFunction() {
 }
 
 module.exports = router;
+module.exports.giveSocket = function(ioSocket) {
+	io = ioSocket;
+}

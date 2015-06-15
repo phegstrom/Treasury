@@ -1,4 +1,42 @@
-/*!  - v0.0.0 - 2015-06-11 */#root {
+/*!  - v0.0.0 - 2015-06-15 */.group-selector {
+  border: 2px solid #ccc;
+  width: 300px;
+  height: 100px;
+  overflow-y: scroll; }
+
+.ui-form {
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%; }
+
+.amount-input {
+  width: 40%; }
+
+.list-group-item > a > .glyphicon {
+  float: right; }
+
+.current-balance {
+  float: right; }
+
+.loader {
+  text-align: center; }
+
+.loader img {
+  max-height: 0;
+  margin: 0;
+  -webkit-transition: 1s all ease;
+  -moz-transition: 1s all ease;
+  -ms-transition: 1s all ease;
+  -o-transition: 1s all ease;
+  transition: 1s all ease; }
+
+.loader.active img {
+  max-height: 50px;
+  margin: 10px auto 20px; }
+
+/*# sourceMappingURL=chargeCreator.css.map */
+
+#root {
   margin-top: 0px; }
 
 /*# sourceMappingURL=dashboard.css.map */

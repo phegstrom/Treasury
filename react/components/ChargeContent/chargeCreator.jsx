@@ -2,6 +2,9 @@
 /* global React */
 "use strict";
 var React = require('../../../public/bower_components/react/react');
+var FormData = require('react-form-data');
+var RequestHandler = require('./charge.RequestHandler');
+var _ = require('underscore');
 
 // var data = {
 //     description: 'Charge description',
@@ -13,156 +16,213 @@ var React = require('../../../public/bower_components/react/react');
 //     ]
 // };
 
-// var StagedUsergroup = React.createClass({
+var Loader = React.createClass({
+  render: function(){
+    return (
+      <div className={"loader " + (this.props.issuingCharge ? "active" : "")}>
+        <img src="loaders/default.svg" />
+      </div>
+    )
+  }
+});
 
-//     render: function() {
-//         return (
-//           <div className="staged-user">
-//                 <b>{this.props.displayName}: </b> {this.props.phoneNumber}
-//                 <a href="#" id='delete-icon' onClick={this._removeUser}>
-//                     <span className="glyphicon glyphicon-remove"></span>
-//                 </a>
-//           </div>
-//         );
-//     }
-// });
+var Charge = React.createClass({
+    render: function(){
 
-
-// var StagedUsergroupList = React.createClass({
-
-//     render: function() {
-//         var userNodes = this.props.data.members.map(function (user, index) {
-//             return (
-//                 <User 
-//                     removeStagedUser={this._removeStagedUser}
-//                     displayName={user.displayName}
-//                     phoneNumber={user.phoneNumber} 
-//                     userId={index} />
-
-//             );
-//         }.bind(this));
-
-//         return (
-//           <div className="commentList">
-//             {userNodes}
-//           </div>
-//         );
-//     }
-
-// });
+        return(
+            <li className="list-group-item">
+                <a data-toggle="collapse" href={"#collapseExample" + this.props.chargeID} aria-expanded="false" aria-controls={"collapseExample" + this.props.chargeID}>
+                    <span className="glyphicon glyphicon-chevron-down"></span>
+                </a>                            
+                {this.props.description}
+                <div className="current-balance">
+                Received {this.props.totalReceived} of {this.props.total}  
+                </div>
+                <div className="collapse" id={"collapseExample" + this.props.chargeID}>
+                    <div className="well">
+                        Charge info goes here...
+                    </div>
+                </div>                
+            </li>
+        );
+    }
+});
 
 
-// var ChargeInformationForm = React.createClass({
+var ChargeList = React.createClass({
+    render: function(){
 
-//     _stageUser: function(e) {
-//         e.preventDefault();
+        return(
+            <ul className="list-group">
+                {this.props.charges.map(function(charge, index){
+                    return(
+                        <Charge 
+                            description={charge.description}
+                            totalReceived={charge.totalReceived*-1}
+                            total={charge.total}
+                            chargeID={index} 
+                        />
+                    );
+                }.bind(this))}                
+            </ul>
+        );
+    }
+});
 
-//         var name = React.findDOMNode(this.refs.name).value.trim();
-//         var userPhoneNumber = React.findDOMNode(this.refs.phoneNumber).value.trim();
-//         var groupName = React.findDOMNode(this.refs.groupName).value.trim();
-//         if (!userPhoneNumber || !name) {
-//           return;
-//         }
 
-//         var obj = {displayName: name, phoneNumber: userPhoneNumber};
-//         this.props.addStagedUser(obj);
-//         this.props.setGroupName(groupName);
+var ChargeInformationForm = React.createClass({
+    mixins: [FormData],
 
-//         React.findDOMNode(this.refs.name).value = '';
-//         React.findDOMNode(this.refs.phoneNumber).value = '';
 
-//         return;
-//     },
+    _createChargeObject: function(data) {
+        var toRet = {   
+                        description: data.description,
+                        audience: data.audience,
+                        individualTotal: data.chargeAmount,
+                        groupIDs: data.groups
+                    };
 
-//     _handleSubmit: function(e) {
-//         e.preventDefault();
-//         var x;
-//         var groupName = React.findDOMNode(this.refs.groupName).value.trim();
-//         this.props.createUserGroup(groupName);
-//         React.findDOMNode(this.refs.groupName).value = '';      
-//     },
+        return toRet;
+    },
 
-//     render: function() {
-//         return (  
-//             <form role="form" className="ui-form" onSubmit={this._handleSubmit}>
-//                 <div className="container">
-//                     <div className="row">
-//                         <div className="col-sm-4">
-//                             <div class='form-group'> 
-//                                 <input className='form-control' type="text" placeholder="User's Name" ref="name" />
-//                             </div>
-//                             <div class='form-group'> 
-//                                 <input className='form-control' type="text" placeholder="User's Phone Number" ref="phoneNumber" />
-//                             </div>   
-//                             <input type="button" onClick={this._stageUser} className='btn btn-default btn-secondary' value="Add User To Group" />
+    _handleSubmit: function(e) {
+        e.preventDefault();
+        var chargeObj = this._createChargeObject(this.formData);
+        document.getElementById("charge-form").reset();
+        this.props.handleSubmit(chargeObj);
 
-//                         </div>
+    },
 
-//                         <div className="col-sm-4">
-//                             <div class='form-group'> 
-//                                 <input className='form-control' type="text" placeholder="Group Name" ref="groupName" />
-//                             </div>                         
-//                             <input type="submit" className='btn btn-default btn-secondary' value="Create Group" /> <br/>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </form>     
-//         );
-//     }
-// });
+    render: function() {
+        return (  
+            <form role="form" id="charge-form" className="ui-form" onChange={this.updateFormData} onSubmit={this._handleSubmit}>
+                <div className='form-group'> 
+                    <label>Charge description</label>
+                    <input className='form-control' name="description" type="text" placeholder="Description..." ref="description" />
+                </div>
+
+                <div className='form-group'>
+                    <label> Audience </label>
+                    <div className="radio">
+                        <label>
+                            <input type="radio" name="audience" value="public" refs="public"/>
+                            public
+                        </label>
+                    </div>                              
+                    <div className="radio">
+                        <label>
+                            <input type="radio" name="audience" value="private" refs="private"/>
+                            private
+                        </label>
+                    </div>                      
+                </div>   
+
+                <div className="form-group">
+                    <label>Individual charge amount</label>
+                    <div className="input-group amount-input">
+                      <div className="input-group-addon">$</div>
+                          <input type="text" className="form-control" name="chargeAmount" id="exampleInputAmount" placeholder="Amount" />
+                      
+                    </div>
+                </div>
+
+                <div className='form-group'>
+                    <label>Choose groups to charge</label>
+                    <div className="group-selector">
+                        {this.props.usergroups.map(function(ugroup){
+                            return(
+                                <div className="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="groups" value={ugroup._id}/>
+                                        {ugroup.name}
+                                    </label> 
+                                </div> 
+                            );
+                        }.bind(this))} 
+                    </div>
+                </div>                         
+                <input type="submit" className='btn btn-brand' value="Create Charge" />
+            </form>  
+
+        );
+    }
+});
 
 
 var ChargeCreatorContainer = React.createClass({
     getInitialState: function() {
-
+        // get intiial data from server upon connection
+        var myUsergroups = JSON.parse(document.getElementById('initial-usergroupList').innerHTML);
+        var myCharges = JSON.parse(document.getElementById('initial-chargeList').innerHTML);
         return {
-                    description: '',
-                    audience: '',
-                    individualTotal: 0,
-                    groupIDs: []
+                    charges: myCharges,
+                    userGroups: myUsergroups,
+                    issuingCharge: false
                 };
     },
 
-    _initializeCharge: function() {
-        // use request handler to issue POST
+    componentDidMount: function() {        
+        // handle socket communication for live updates
+
+        var socket = io.connect('http://localhost:3000/');
+        socket.on('chargeCreated', function(charge) {
+            console.log('got emitted event from charge');
+            var newChargeList = this.state.charges;
+            newChargeList.push(charge);
+            newChargeList = _.sortBy(newChargeList, 'dateCreated')            
+            newChargeList.reverse();
+            var self = this;
+
+            // setting time out for fun, just to see if loader works
+            setTimeout(function(){
+
+            // new state, turn off loader
+            self.setState({charges: newChargeList, issuingCharge: false});
+
+            }, 2000);    
+
+        }.bind(this));
     },
 
-    _check: function() {
-        this.setState({
-                    description: '',
-                    audience: '',
-                    individualTotal: 0,
-                    groupIDs: []
-                });
+    _initializeCharge: function(chargeObj) {        
+        // issue POST request to server
+        this.setState({issuingCharge: true});
+        RequestHandler.issueCharge(chargeObj, function (err, charge) {
+            if (err) {
+                alert('error creating charge');
+                return;    
+            }            
+            alert('charge created successfully!');
+            return;
+        });        
+
     },
 
     render: function() {
-
-        // var myUsergroups = JSON.parse(document.getElementById('initial-usergroupList').innerHTML);
-        var myUsergroups = document.getElementById('initial-usergroupList').innerHTML;
-        var parsed = JSON.parse(myUsergroups);
-        // var jobj = JSON.stringify(myUsergroups);
-        // console.log(typeof myUsergroups);
-        console.log(parsed);
+        console.log(this.state);
 
         return (
-            // <h1>Charge Creator COntainer</h1>
-            <input type="button" onClick={this._check} className='btn btn-default btn-secondary' value="Click" />
-          // <div className="charge-form">
-          //   // <h3>Create your group charge below</h3>
-          //   // <ChargeInformationForm 
-          //   //     handleSubmit={this._initializeCharge} 
-          //   //     usergroups={myUsergroups} />
-          // </div>
+          <div className="charge-container">
+            <Loader issuingCharge={this.state.issuingCharge}/>
+
+            <h3>See below for your issued charges:</h3>
+            <ChargeList
+                charges={this.state.charges} />
+            <h3>Create group charge below</h3>
+            
+            <ChargeInformationForm 
+                handleSubmit={this._initializeCharge} 
+                usergroups={this.state.userGroups} />
+          </div>
         );
     }
 
 });
 
 
-React.render(
-  <ChargeCreatorContainer />,
-  document.getElementById('charge-container')
-);
+// React.render(
+//   <ChargeCreatorContainer />,
+//   document.getElementById('charge-container')
+// );
 
 module.exports = ChargeCreatorContainer;

@@ -1,14 +1,29 @@
 var passport = require('passport');
 var User = require('../models/User');
 var UserGroup = require('../models/UserGroup');
+var _ = require('underscore');
 var router = require('express').Router();
 
 
 router.get('/', requireLogin, function(req, res, next) {
-  User.findOne({_id: req.session.user._id}, 'userGroups')
+  User.findOne({_id: req.session.user._id})
     .populate('userGroups')
-    .exec(function (err, user) {  
-      res.render('dashboard', {user: req.session.user, usergroupList: JSON.stringify(user.userGroups)});    
+    .deepPopulate('myCharges.transactions.group')
+    .exec(function (err, user) {
+
+      // send existing data to client for initial rendering
+      console.log('sending pre-existing data from server...');
+      var orderedChargeList = user.myCharges;
+      orderedChargeList = _.sortBy(orderedChargeList, 'dateCreated');
+      orderedChargeList.reverse();
+
+      var objToSend = {
+                        user: req.session.user,
+                        usergroupList: JSON.stringify(user.userGroups),
+                        chargeList: JSON.stringify(orderedChargeList),
+                      }
+
+      res.render('dashboard', objToSend);    
     });  
 });
 

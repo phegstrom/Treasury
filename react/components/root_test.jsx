@@ -2,6 +2,7 @@
 /* global React */
 "use strict";
 var React = require('../../public/bower_components/react/react');
+// var ChargeContainer = require('./ChargeContent/chargeCreator.jsx');
 
 var tabList = [
 	{'id': 1, 'name': 'Profile', 'url': '/profile', 'descr': 'This is the Profile page'},
@@ -78,7 +79,7 @@ var Content = React.createClass({
 
                 {this.props.currentTab === 3 ?
                 <div className="charges">
-                     <p>This is Charges </p>
+                     
                 </div>
                 :null}
             </div>
@@ -119,9 +120,9 @@ var MainContainer = React.createClass({
 
 
 
-React.render(
-  <MainContainer/>,
-  document.getElementById('main-container')
-);
+// React.render(
+//   <MainContainer/>,
+//   document.getElementById('main-container')
+// );
 
 module.exports = MainContainer;

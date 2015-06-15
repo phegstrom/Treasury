@@ -56,7 +56,7 @@ router.post('/', function (req, res, next) {
 				// now update charge in database
 				function (chargeId, next) {
 					Charge.findOne({_id: chargeId}, function (err, charge) {
-						charge.totalReceived += charge.individualTotal;
+						charge.totalReceived += (-charge.individualTotal); // negative because number stored as negative for charges
 						charge.save(function (err, saved) {
 							next(null);
 						});
