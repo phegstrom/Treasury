@@ -59,7 +59,7 @@ router.post('/', function (req, res, next){
 	
 	UserGroup.getMemberCount(groups, function (err, memberCount, phoneArray) {
 		
-		charge.total = memberCount * indTotal;
+		charge.total = memberCount * -indTotal; // negative bc charges are negative in venmo system
 		charge.save(function (err, saved) {
 
 			User.findOneAndUpdate({_id: uid}, {$push: {myCharges: saved._id}}, function (err, numAffected) {
@@ -160,12 +160,20 @@ function createWaterfallArray(req, res) {
 
 // creates venmo_charge function to send in waterfall
 function createFunctionInArray(charge, venmoBody, index) {
-
+	// TODO: Parker
+	// handle if there is an error in response, because
+	// right now the server crashes...
 	var f = function(transactionIds, next) {
 
 		request.post(BASE_URL, {form: venmoBody}, function (err, resp, receipt) {
 			console.log('received Venmo response ' + index);
+			if (err) {
+				console.log('ERROR with transaction ' + index);
+				console.log(err);
+				console.log(receipt);
+			}
 			receipt = JSON.parse(receipt);
+			
 
 			var transactionObject = {
 				phoneNumber: charge.phoneNumbers[index].phoneNumber,
@@ -182,8 +190,7 @@ function createFunctionInArray(charge, venmoBody, index) {
 			if (err) 
 				transactionObject.errorMsg = err.message;
 
-			// handle case where phone number is not assoc. with a venmo
-			// account
+			// handles case where phone number is not assoc. with a venmo account
 			if (receipt.data.payment.target.user == null) {
 				transactionObject.userExists = false;
 			}
@@ -191,6 +198,7 @@ function createFunctionInArray(charge, venmoBody, index) {
 			var trans = new Transaction(transactionObject);
 
 			trans.save(function (err, saved) {
+				if (err) next(err);
 				transactionIds.push(saved._id);
 				console.log('(Charge ' + index + ') Charge to ' + charge.phoneNumbers[index].phoneNumber + ': COMPLETE');
 				next(null, transactionIds);	

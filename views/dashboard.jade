@@ -12,6 +12,14 @@ block content
 		#root
 			.row
 				.col-sm-8
+					h3 Upload group below...
+
+					form.dropzone#my-dropzone(action="/file-upload", enctype="multipart/form-data")
+					br
+					.button-container
+						button.btn.btn-default#submit-all Upload	
+					
+
 					#usergroup-container
 					#charge-container								
 					#pageNav
@@ -20,5 +28,3 @@ block content
 
 
 script(id="initial-usergroupList" type="application/json").usergroupList
-
-

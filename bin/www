@@ -2,7 +2,7 @@
 var debug = require('debug')('VenmoGroups');	
 var app = require('../app');	
 var http = require('http');	
-var giveSocket = require('../routes/chargeRoutes').giveSocket;
+var giveSocketToChargeRoute = require('../routes/chargeRoutes').giveSocket;
 
 app.set('port', process.env.PORT || 3000);
 
@@ -16,16 +16,4 @@ var server = http.createServer(app).listen(port, function() {
 });
 
 var io = require('socket.io').listen(server);
-giveSocket(io);
-// io.on('connection', function (socket) {
-//   socket.emit('chargeCreated', { hello: 'world' });
-//   socket.on('my other event', function (data) {
-//     console.log(data);
-//   });
-// });
-
-
-// // expose the socket to Route Modules
-// var getIO = function() {
-// 	return io;
-// }
+giveSocketToChargeRoute(io); // gives io access to chargeRoutes.js

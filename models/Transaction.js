@@ -22,5 +22,4 @@ var TransactionSchema = new Schema({
 
 TransactionSchema.plugin(deepPopulate);
 
-
 module.exports = mongoose.model('Transaction', TransactionSchema);

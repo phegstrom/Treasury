@@ -28,7 +28,8 @@ var Loader = React.createClass({
 
 var Charge = React.createClass({
     render: function(){
-
+        // TODO - Parker/Ryan: populate charge info, all this information is
+        // is located in this.props.transactions
         return(
             <li className="list-group-item">
                 <a data-toggle="collapse" href={"#collapseExample" + this.props.chargeID} aria-expanded="false" aria-controls={"collapseExample" + this.props.chargeID}>
@@ -58,9 +59,10 @@ var ChargeList = React.createClass({
                     return(
                         <Charge 
                             description={charge.description}
-                            totalReceived={charge.totalReceived*-1}
+                            totalReceived={charge.totalReceived}
                             total={charge.total}
-                            chargeID={index} 
+                            chargeID={index}
+                            transactions={charge.transactions} 
                         />
                     );
                 }.bind(this))}                
@@ -163,7 +165,6 @@ var ChargeCreatorContainer = React.createClass({
 
     componentDidMount: function() {        
         // handle socket communication for live updates
-
         var socket = io.connect('http://localhost:3000/');
         socket.on('chargeCreated', function(charge) {
             console.log('got emitted event from charge');
@@ -186,13 +187,14 @@ var ChargeCreatorContainer = React.createClass({
 
     _initializeCharge: function(chargeObj) {        
         // issue POST request to server
-        this.setState({issuingCharge: true});
+        var self = this;
+        self.setState({issuingCharge: true});
         RequestHandler.issueCharge(chargeObj, function (err, charge) {
             if (err) {
                 alert('error creating charge');
+                self.setState({issuingCharge: false});
                 return;    
-            }            
-            alert('charge created successfully!');
+            }                
             return;
         });        
 

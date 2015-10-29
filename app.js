@@ -22,6 +22,8 @@ var oathRoutes = require('./routes/oathRoutes');
 var usergroupRoutes = require('./routes/usergroupRoutes');
 var chargeRoutes = require('./routes/chargeRoutes');
 var webhookRoutes = require('./routes/webhookRoutes');
+var uploadRoutes = require('./routes/uploadRoutes');
+
 
 var app = express();
 
@@ -155,6 +157,7 @@ app.use('/usergroup', usergroupRoutes);
 // app.use('/charge', requireLogin, chargeRoutes);
 app.use('/charge', chargeRoutes); //requireLogin if not for testing RYAN
 app.use('/webhook', webhookRoutes);
+app.use('/file-upload', uploadRoutes);
 
 
 // ADD postManTest to app.use() line

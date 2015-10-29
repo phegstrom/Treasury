@@ -7,11 +7,18 @@ html
 
     link(rel='stylesheet', href='./css/build/combined.min.css')
     link(rel='stylesheet', href='./css/layout.css')
+    //- drop
+    link(rel='stylesheet', href='./css/dropzone/dropzone.css')
+    link(rel='stylesheet', href='./css/dropzone/customize.css')
+
 
 
     block scripts
       script(src='./bower_components/jquery/dist/jquery.min.js')
       script(src='./bower_components/bootstrap/dist/js/bootstrap.min.js')
+
+      script(src="./scripts/dropzone/dropzone.js")
+      script(src="./scripts/dropzone/customize.js")  
 
       //- this loads initial data from the server and react can use it
       script(id="initial-usergroupList" type="application/json").
@@ -61,4 +68,3 @@ html
         
 script(src="./bower_components/socket.io-client/socket.io.js")
 script(src="./scripts/react/bundle.js")
-
