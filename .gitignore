@@ -39,5 +39,8 @@ data
 # Debug log from npm
 npm-debug.log
 
+# any file uploads
+uploads
+
 # DS STORE
 **/.DS_Store
