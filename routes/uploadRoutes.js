@@ -11,7 +11,6 @@ var BASE_URL = config.Venmo_BASE_URL;
 var storage = multer.diskStorage({
   destination: './uploads',
   filename: function (req, file, cb) {
-  	//console.log(file);
     cb(null, 'uploadedGroup.xlsx');
   }
 
@@ -36,6 +35,9 @@ var fileFilterObj = function (req, file, cb) {
 
 var upload = multer({ storage: storage, fileFilter: fileFilterObj });
 
+
+// route handles uploading of the file, will send back preview
+// of the charge to client
 router.post('/', upload.any(), function (req, res, next) {
 	
 	console.log('received file...');
@@ -53,23 +55,60 @@ router.post('/', upload.any(), function (req, res, next) {
 	var venmoArray = createVenmoObjects(obj[0].data, req);
 	console.log(venmoArray);
 
-	issueVenmoChargeAsynch(venmoArray[0], 0).then(function (result) {
-		console.log('QQQQQQ*********************');
-		console.log(result);
+
+
+	
+	res.status(200).send(venmoArray);
+});
+
+// issues the charges to venmo
+router.put('/', function (req, res, next) {
+	console.log('issuing venmo charges...');
+	issueAllVenmoCharges(req.body).then(function(results) {
+		console.log(results);
+		var allGood = true;
+		results.forEach(function(result, index) {
+			console.log('charge: ' + index);
+			if(result.value) console.log(result.value.data.payment.target);
+			else {
+				console.log(result.reason);
+				allGood = false;
+			}
+			
+		});
+
 		res.status(200).end();
-	}, function (result) {
-		console.log('Q Error thrown');
-		console.log(result);
-		res.status(500).end();
+	});
+});
+
+
+// returns promise that resolves when all charges have resolved
+// resolve or reject, must check status upon return of this method
+function issueAllVenmoCharges (venmoBodyArray) {
+	return Q.allSettled(venmoBodyArray.map(function(venmoBody, index) {
+		return issueVenmoChargeAsynch(venmoBody, index);
+	}));
+}
+
+// asynch part of the function, will create a promise and return it
+// on a per charge basis
+function issueVenmoChargeAsynch(venmoBody, index) {
+	var deferred = Q.defer();
+
+	request.post(BASE_URL, {form: venmoBody}, function (err, resp, receipt) {
+		console.log('received Venmo response ' + index);
+		receipt = JSON.parse(receipt);
+		if (err || receipt.error) deferred.reject(receipt);
+		else deferred.resolve(receipt);			
 	});
 
-
-});
+	return deferred.promise;
+}
 
 // creates array of vemmo objects to be sent to venmo
 function createVenmoObjects(excel, req) {
 	var toRet = [];
-	for (var i = 1; i < 5; i++) {
+	for (var i = 1; i < excel.length; i++) {
 		var amt = excel[i][2];
 		amt = (amt < 0) ? amt : amt * -1; // can only do charges
 		var obj = {
@@ -83,25 +122,6 @@ function createVenmoObjects(excel, req) {
 	}
 
 	return toRet;
-}
-
-// asynch part of the function, will create a promise and return it
-function issueVenmoChargeAsynch (venmoBody, index) {
-	var deferred = Q.defer();
-
-	request.post(BASE_URL, {form: venmoBody}, function (err, resp, receipt) {
-		console.log('received Venmo response ' + index);
-		receipt = JSON.parse(receipt);
-		if (err || receipt.error) {
-			deferred.reject(receipt);
-		} 
-
-			deferred.resolve(receipt);			
-		
-
-	});
-
-	return deferred.promise;
 }
 
 module.exports = router;

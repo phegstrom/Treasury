@@ -17,13 +17,29 @@ block content
 					form.dropzone#my-dropzone(action="/file-upload", enctype="multipart/form-data")
 					br
 					.button-container
-						button.btn.btn-default#submit-all Upload	
-					
+						button.btn.btn-default#upload-all Upload	
 
-					#usergroup-container
-					#charge-container								
-					#pageNav
-					#main-container
+
+
+			//- button.btn.brand-button(type='button', data-toggle='modal', data-target='#charge-review-modal') Open Modal
+
+
+
+		.modal.fade#charge-review-modal(tabindex="-1" role="dialog")
+			.modal-dialog.modal-md
+				.modal-content
+					.modal-header
+						h4 Review Charge Below...
+					.modal-body
+						ul.collection.charge-preview-list
+						button.btn.brand-button#submitChargeButton(type='submit') Submit Charge  
+							span.glyphicon.glyphicon-arrow-right(aria-hidden='true')
+
+		#usergroup-container
+		#charge-container								
+		#pageNav
+		#main-container
+
 	else
 
 
