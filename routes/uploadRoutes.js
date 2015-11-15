@@ -16,25 +16,7 @@ var storage = multer.diskStorage({
 
 });
 
-var fileFilterObj = function (req, file, cb) {
-  	// check if not an excel file
-  	console.log('checking file type');
-  	console.log(file.originalname);
-  	console.log(file.originalname.indexOf('.xls'));
-  	if (file.originalname.indexOf('.xls') > 0) {
-  		cb(null, true);
-  		return;
-  	}
-  	if (file.originalname.indexOf('.xlsx') > 0) {
-  		cb(null, true);
-  		return;
-  	}
-  	console.log('File type not supported');
-  	cb(null, false);
- };
-
-var upload = multer({ storage: storage, fileFilter: fileFilterObj });
-
+var upload = multer({storage: storage});
 
 // route handles uploading of the file, will send back preview
 // of the charge to client
@@ -47,16 +29,12 @@ router.post('/', upload.any(), function (req, res, next) {
 	console.log('new object');
 	console.log(obj[0].data);
 
-	// TODO: create json object to send back to front end
-	// another route to take confirm charge
-
-	// TODO: make sure excel is correct format
-
-	var venmoArray = createVenmoObjects(obj[0].data, req);
+	// check if excel document correct format
+	var venmoArray;
+	if(obj[0].data[0].length != 3) venmoArray = {err: 'file not in correct format!'};
+	else venmoArray = createVenmoObjects(obj[0].data, req);
+	
 	console.log(venmoArray);
-
-
-
 	
 	res.status(200).send(venmoArray);
 });
@@ -65,6 +43,7 @@ router.post('/', upload.any(), function (req, res, next) {
 router.put('/', function (req, res, next) {
 	console.log('issuing venmo charges...');
 	issueAllVenmoCharges(req.body).then(function(results) {
+		console.log('got results');
 		console.log(results);
 		var allGood = true;
 		results.forEach(function(result, index) {
@@ -85,6 +64,7 @@ router.put('/', function (req, res, next) {
 // returns promise that resolves when all charges have resolved
 // resolve or reject, must check status upon return of this method
 function issueAllVenmoCharges (venmoBodyArray) {
+	console.log('Charge count: ' + venmoBodyArray.length);
 	return Q.allSettled(venmoBodyArray.map(function(venmoBody, index) {
 		return issueVenmoChargeAsynch(venmoBody, index);
 	}));

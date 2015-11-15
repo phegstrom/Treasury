@@ -32,8 +32,17 @@ block content
 						h4 Review Charge Below...
 					.modal-body
 						ul.collection.charge-preview-list
+						button.btn.btn-default#cancel-button(type='button') Cancel  	
 						button.btn.brand-button#submitChargeButton(type='submit') Submit Charge  
 							span.glyphicon.glyphicon-arrow-right(aria-hidden='true')
+
+		.modal.fade#charge-review-modal-success(tabindex="-1" role="dialog")
+			.modal-dialog.modal-md
+				.modal-content
+					.modal-header
+						h4 Success! Review charge below...
+					.modal-body
+						button.btn.brand-button#submitChargeButton(type='button', data-toggle='modal', data-target='#charge-review-modal-success') Exit  
 
 		#usergroup-container
 		#charge-container								
