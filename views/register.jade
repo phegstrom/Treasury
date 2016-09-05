@@ -3,7 +3,7 @@ extends layout
 block content
 
     h2 Register Page
-    p.lead Register your account below
+    p.lead Register your account below pls
     br
     form(role='form', action="/register",method="post", style='max-width: 300px;')
       .form-group
@@ -12,6 +12,8 @@ block content
           input.form-control(type='text', name="email", placeholder='Enter Email')
       .form-group
         input.form-control(type='password', name="password", placeholder='Password')
+      .form-group
+        input.form-control(type='password', name="password", placeholder='Password again')
       button.btn.btn-default(type='submit') Submit
       a(href='/login')
         button.btn.btn-primary(type="button") Cancel

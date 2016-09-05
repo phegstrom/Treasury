@@ -159,6 +159,8 @@ app.use('/webhook', webhookRoutes);
 
 // ADD postManTest to app.use() line
 // insert specific user id here when testing with POSTman
+// do this because routes check for logged in user, can't do this in
+// POSTman
 function postMANTest(req, res, next) {
   req.session = {user: {_id: "54dadb440f91335218191cb1",
                         access_token: '9935b8cd1a9c0ab5c2c5ed7a2f285316a4f38fb565832045c1c1d2a2e236e708'}};

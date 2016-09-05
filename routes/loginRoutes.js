@@ -61,7 +61,8 @@ router.get('/query', function(req, res) {
   });
 });
 
-
+// Checks if user is logged in or if cookie has expired.
+// If so, will redirect to login page
 function requireLogin (req, res, next) {
   if (!req.user) {
     res.redirect('/login');

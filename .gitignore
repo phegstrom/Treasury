@@ -41,3 +41,6 @@ npm-debug.log
 
 # DS STORE
 **/.DS_Store
+
+# CSS Conversion stuff
+.sass-cache

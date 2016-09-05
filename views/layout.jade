@@ -2,63 +2,59 @@ doctype html
 html
   head
     title Treasury
-    link(rel='stylesheet', href='./bower_components/bootstrap/dist/css/bootstrap.min.css')
     
+    //- link(rel='stylesheet', href='./css/build/combined.min.css')
+    //-link(rel='stylesheet', href='./css/layout.css')
+    //- link(rel='stylesheet', href='./css/layout.min.css')
+    //- link(rel='stylesheet', href='./css/build/combined-build.min.css')
+    link(rel='stylesheet', href='./css/build/combined-build.css')
 
-    link(rel='stylesheet', href='./css/build/combined.min.css')
-    link(rel='stylesheet', href='./css/layout.css')
+    //- Google front end APIs
+    link(rel='stylesheet', href='https://fonts.googleapis.com/icon?family=Material+Icons')
+    //- link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css')
 
+    //- dropzone
+    //- link(rel='stylesheet', href='./css/dropzone/dropzone.css')
+    //- link(rel='stylesheet', href='./css/dropzone/customize.css')
 
     block scripts
       script(src='./bower_components/jquery/dist/jquery.min.js')
-      script(src='./bower_components/bootstrap/dist/js/bootstrap.min.js')
-
-      //- this loads initial data from the server and react can use it
-      script(id="initial-usergroupList" type="application/json").
-        !{usergroupList}
-      script(id="initial-chargeList" type="application/json").
-        !{chargeList}        
-
+      //- script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js')
+      script(src='./bower_components/parsleyjs/dist/parsley.min.js')
+      script.
+        $(document).ready(function() {
+          $('.modal-trigger').leanModal();
+          $('.tooltipped').tooltip({delay: 10});
+        })
+       
   body
-    nav.navbar.navbar-default
-      .container-fluid
-        .navbar-header
-          .navbar-brand
-            a(href="#") 
-              #brand Treasury
-
-        .collapse.navbar-collapse
-          if(user)
-            ul.nav.navbar-nav.navbar-right
-              li
-                if(user.isConnected)
-                  a(href="#") 
-                    img(alt="Venmo Authenticated" src="./img/checkmark.png") 
-                    span Venmo
-                else
-                  a(href="/auth") 
-                    img(alt="Venmo Not Authenticated" src="./img/x.svg") 
-                    span Connect with Venmo
-              li 
-                a(href="#") Signed in as #{user.name} 
-              li
-                a(href='/logout') Log Out
-          else
-            ul.nav.navbar-nav.navbar-right
-              li
-                a(href='/logout') Log Out
-              
-
-
-
-
-           
-
-
+    nav
+      .nav-wrapper
+        a(href="#").brand-logo.left 
+          #brand Treasury
+        if(user)
+          ul#nav-mobile.right
+            li
+              if (user.isConnected)
+                a(href="#") Venmo Connected
+                  i.material-icons.left.connected-icon done
+              else
+                a(href="/auth") Venmo Not Connected
+                  i.material-icons.left.not-connected-icon clear
+            li 
+              a(href="#") Signed in as #{user.name} 
+            li
+              a(href='/logout') Log Out
+        else
+          ul#nav-mobile.right
+            li
+              a(href='/logout') Log Out
+                         
 
     .container
       block content
-        
-script(src="./bower_components/socket.io-client/socket.io.js")
-script(src="./scripts/react/bundle.js")
 
+
+    //- script(src="./scripts/dropzone/dropzone.js") 
+    //- script(src="./scripts/FormValidate.js")
+    script(src='./scripts/react/bundle.js')

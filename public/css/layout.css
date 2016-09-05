@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Lobster";
-  src: url("../font/Lobster.otf"); }
+  src: url("/font/Lobster.otf"); }
 .navbar {
   background-color: #4ECDB2; }
 
@@ -31,5 +31,3 @@
 
 .form-control {
   margin-bottom: 1em; }
-
-/*# sourceMappingURL=layout.css.map */

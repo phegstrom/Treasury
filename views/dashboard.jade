@@ -2,23 +2,53 @@ extends layout
 
 block content 
 	if (user && !(user.isConnected))
-		p You are currently logged in as #{user.name}. Authorize with Venmo account  <a href='/auth'>here</a>
+		p You are currently logged in as #{user.name}. In order to use this web app, you must connect to your Venmo account  <a href='/auth'>here</a>
 	else if (!user)
 		p You are currently not logged in. Please login or register... 
 
-
+	#test-container
 
 	if(user.isConnected)
 		#root
 			.row
-				.col-sm-8
-					#usergroup-container
-					#charge-container								
-					#pageNav
-					#main-container
+				.col.s12
+					h5 1. Create a spreadsheet with the following form...
+					.button-container
+						a.btn.modal-trigger(href='#example-spreadsheet-modal') Click To View Example
+					h5 2. Upload the spreadsheet below, confirmation page will appear
+					form.dropzone#my-dropzone(action="/file-upload", enctype="multipart/form-data")
+					br
+					.button-container
+						button.btn.btn-default#upload-all Upload
+							i.material-icons.right cloud_upload
+
+	
+		.modal#charge-review-modal.modal-fixed-footer
+			.modal-content
+				h4 Review Charge Below...
+				.modal-body
+					ul.collection.charge-preview-list
+					a.btn-flat.modal-action.modal-close#cancel-buttons(href='#') Cancel  	
+					a.btn.modal-action.modal-close#submitChargeButton(href='#') Submit Charge
+						i.material-icons.right send
+
+		.modal#charge-review-modal-success.modal-fixed-footer
+			.modal-content
+				h4 Success! Review charge below. A log was also sent to your email on file.
+				.modal-body
+						ul.collection.charge-receipt-list
+						a.btn.modal-action.modal-close#close-success-button(href='#') Exit
+
+		.modal#example-spreadsheet-modal
+			.modal-content
+				h4 See below for example sheet
+				.modal-body
+					img(src="./img/tutorial.png")					 				
+				
+
+		#usergroup-container
+		#charge-container								
+		#pageNav
+		#main-container
+
 	else
-
-
-script(id="initial-usergroupList" type="application/json").usergroupList
-
-

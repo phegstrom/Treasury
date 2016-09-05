@@ -1,4 +1,4 @@
-/*!  - v0.0.0 - 2015-06-15 */.group-selector {
+/*!  - v0.0.0 - 2016-09-05 */.group-selector {
   border: 2px solid #ccc;
   width: 300px;
   height: 100px;
@@ -34,16 +34,12 @@
   max-height: 50px;
   margin: 10px auto 20px; }
 
-/*# sourceMappingURL=chargeCreator.css.map */
-
 #root {
   margin-top: 0px; }
 
-/*# sourceMappingURL=dashboard.css.map */
-
 @font-face {
   font-family: "Lobster";
-  src: url("../font/Lobster.otf"); }
+  src: url("/font/Lobster.otf"); }
 .navbar {
   background-color: #4ECDB2; }
 
@@ -75,8 +71,6 @@
 .form-control {
   margin-bottom: 1em; }
 
-/*# sourceMappingURL=layout.css.map */
-
 .navbar-brand img {
   height: 20px; }
 
@@ -86,8 +80,6 @@
 .nav > li > a > span {
   padding-left: 5px; }
 
-/*# sourceMappingURL=login.css.map */
-
 .usergroup-form {
   max-width: 300px; }
 
@@ -96,5 +88,3 @@
 
 .staged-user:hover {
   background-color: #f5f5f5; }
-
-/*# sourceMappingURL=usergroupCreator.css.map */

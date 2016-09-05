@@ -1,49 +1,53 @@
-
-
 extends layout
 
 block content
-  .container
-    .row
-      .col-sm-5
-        form(role='form', action="/login",method="post", style='max-width: 300px;')
-          .form-group
-            p Email:
-            input.form-control(type='text', name="email", placeholder='Enter Email')
-          .form-group
-            p Password:
-            input.form-control(type='password', name="password", placeholder='Password')
-          button.btn.btn-default(type='submit') Login
+  .row
+    .col.s6
+      form.col.s12#login-form(role='form', action="/login",method="post", style='max-width: 300px;')
+        .row
+          .input-field.col.s12
+            input(placeholder='Enter Email',id='for_email_login', type='email',name="email")
+            label(for='for_email_login', id='for_email_login_label', class='active') Email
+        .row
+          .input-field.col.s12
+            input(placeholder='Enter Password',id='for_password_login', type='password', name="password",class='')
+            label(for='for_password_login', id='for_password_login_label',class='active') Password  
+        button.btn.login-button(type='submit') Login           
+        br
+        br
+        a.waves-effect.waves-light.btn.modal-trigger#sign-up-button(href='#sign-up-modal') Sign Up Now!
+    .col.s6
+      h5 Treasury simplifies group payments and makes it easy to see who has paid, who hasn't, how much money you have raised, and how close you are to reaching your goal.
 
 
-        button(type="button" data-toggle="modal" data-target="#myModal").btn.brand-button
-          p.lead Sign Up Now!
-
-      .col-sm-7
-        h3 Treasury simplifies group payments and makes it easy to see who has paid, who hasn't, how much money you have raised, and how close you are to reaching your goal.
-
-        h5 Insert Graphic Below
-        
-  .modal.fade#myModal(tabindex="-1" role="dialog")
-    .modal-dialog.modal-sm
-      .modal-content
-        .modal-header
-          button.close(type="button" data-dismiss="modal" aria-label="Close")
-            span(aria-hidden="true")
-              &times
-        .modal-body
-              p.lead Register your account below
-              br
-              form(role='form', action="/register",method="post", style='max-width: 300px;')
-                .form-group
-                    input.form-control(type='text', name="name", placeholder='John Doe')
-                .form-group
-                    input.form-control(type='text', name="email", placeholder='Enter Email')
-                .form-group
-                  input.form-control(type='password', name="password", placeholder='Password')
-                button.btn.brand-button(type='submit') Submit
-                a(href='/')
-                  button.btn.btn-default(type="button") Cancel
+  #sign-up-modal.modal
+    .modal-content
+      h4.center-align Register for Treasury Below
+      .divider
+      form.col.s12#signup-form(role='form', action="/register",method="post")
+        .row
+          .input-field.col.s6.offset-s3
+            input(placeholder='John Doe',id='for_name', type='text', name="name", class='')
+            label(for='for_name', id='for_name_label') Name
+        .row   
+          .input-field.col.s6.offset-s3
+            input(placeholder='jd@gmail.com',id='for_email', type='email', name="email", class='email-input')
+            label(for='for_email', id='for_email_label', class='active') Email
+        .row 
+          .input-field.col.s6.offset-s3
+            input(placeholder='Enter Password',id='for_password', type='password', name="password", class='password-input')
+            label(for='for_password', id='for_password_label', class='active') Password
+        .row
+          .input-field.col.s6.offset-s3
+            input(placeholder='Enter Password',id='for_password-1', type='password', name="password1", class='password-input-2')
+            label(for='for_password-1', id='for_password_1_label', class='active') Re-enter Password
+        .divider
+        br  
+        .row.center        
+          button.btn-flat#signup-btn(type='submit') Submit
+            i.material-icons.right done
+          a.waves-effect.waves-light.btn-flat.modal-action.modal-close(href='#sign-up-modal') Cancel
+            i.material-icons.right clear
 
 
 
