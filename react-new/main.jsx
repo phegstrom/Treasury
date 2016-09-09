@@ -1,26 +1,20 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from "react";
+import ReactDOM from "react-dom";
 
-import InputForm from './components/inputForm.jsx';
+import {InputForm} from './components/inputForm.jsx';
 import QueryList from './components/queryList.jsx';
 
-// var InputForm = require('./components/inputForm.jsx');
-// var QueryList = require('./components/queryList.jsx');
+class App extends React.Component {
 
-var App = React.createClass({
-	render: function(){
+	render() {
 		return (
-				<div>
-					<div className="col s6">
-						<InputForm />
-					</div>
-					<div className="col s6" id='query-list'>
-						<QueryList />
-					</div>
+				<div className="row">
+					<InputForm name="name 1"/>
+					<QueryList />
 				</div>
 		);
 	}
-});
+}
 
 ReactDOM.render(
   <App />,

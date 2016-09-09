@@ -1,16 +1,9 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from "react";
 
-var QueryList = React.createClass({
-
-
-	render: function(){
+export default class QueryList extends React.Component {
+	render() {
 		return (
-				<div className="second-div">
-					<p>Second Div</p>
-				</div>
+				<h4 className="col s6 header">Header 2</h4>
 		);
 	}
-});
-
-module.exports = QueryList;
+}

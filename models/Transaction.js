@@ -10,7 +10,7 @@ var TransactionSchema = new Schema({
 		phoneNumber: String,
 		paymentId: String, // venmo id of the charge
 		note: String,
-		status: {type: String, enum: states, defult: states[0]},   // whether or not it has been fulfilled
+		status: {type: String, enum: states, default: states[0]},   // whether or not it has been fulfilled
 		dateCompleted: {type: Date, default: null}, // date of charge completion
 		dateCreated: {type: Date, default: Date.now},
 		group: {type: Schema.Types.ObjectId, ref: 'UserGroup'}, // will be NULL if appended to charge after initial creation of charge

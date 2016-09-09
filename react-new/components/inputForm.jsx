@@ -1,16 +1,13 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from "react";
 
-var InputForm = React.createClass({
+export class InputForm extends React.Component {
+	constructor(props) {
+		super(props);
+	}
 
-
-	render: function(){
+	render() {
 		return (
-				<div className="one-div">
-					<p>First Div</p>
-				</div>
+				<h4 className="col s6 header">{this.props.name}</h4>
 		);
 	}
-});
-
-module.exports = InputForm;
+}
