@@ -151,9 +151,9 @@ app.use(function(req, res, next) {
 // load route middleware
 app.use('/', loginRoutes);
 app.use('/auth', requireLogin, oathRoutes);
-app.use('/usergroup', usergroupRoutes);
+app.use('/usergroup', postMANTest, usergroupRoutes);
 // app.use('/charge', requireLogin, chargeRoutes);
-app.use('/charge', chargeRoutes); //requireLogin if not for testing RYAN
+app.use('/charge', postMANTest, chargeRoutes); //requireLogin if not for testing RYAN
 app.use('/webhook', webhookRoutes);
 
 
@@ -162,8 +162,8 @@ app.use('/webhook', webhookRoutes);
 // do this because routes check for logged in user, can't do this in
 // POSTman
 function postMANTest(req, res, next) {
-  req.session = {user: {_id: "54dadb440f91335218191cb1",
-                        access_token: '9935b8cd1a9c0ab5c2c5ed7a2f285316a4f38fb565832045c1c1d2a2e236e708'}};
+  req.session = {user: {_id: "57d31af6f91daf6d0a36e89c",
+                        access_token: 'bad0df96e3a8fe756b21863da42f3ef4e6b8d8b8f999e928f6ce956051262c23'}};
   next();
 }
 

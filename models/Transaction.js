@@ -8,6 +8,7 @@ var deepPopulate = require('mongoose-deep-populate');
 
 var TransactionSchema = new Schema({
 		phoneNumber: String,
+		username: String,
 		paymentId: String, // venmo id of the charge
 		note: String,
 		status: {type: String, enum: states, default: states[0]},   // whether or not it has been fulfilled

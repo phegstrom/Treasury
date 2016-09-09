@@ -7,6 +7,7 @@ var mongoose	= require('mongoose');
 var request = require('request');
 var async = require('async');
 var _ = require('underscore');
+var Q = require('q');
 
 // var io = require('socket.io').listen(require('../bin/www'));
 var io;
@@ -74,134 +75,147 @@ router.post('/', function (req, res, next){
 
 
 // part of the route that issues the requests
-// req.charge holds the charge json object
-// using async.js waterfall() to handle multiple asynch operations
 router.post('/', function (req, res, next){
 	console.log('issuing charges to venmo api...');
-
-	var fnArray = createWaterfallArray(req, res);
-
-	async.waterfall(fnArray);
-
-});
-
-// will add users to a charge after the charge has been initiated
-router.put('/:chargeId', function (req, res, next){
-	var newUsers = req.body.targets;
-
-	Charge.findOne({_id: req.params.chargeId}, function (err, charge) {
-		charge.addedUsers = _.union(charge.addedUsers, newUsers);
-		charge.total += (newUsers.length * charge.individualTotal);
-		charge.save(function (err, saved) {
-			console.log('adding individual transaction to charge...')
-
-			// stage vars for the venmo api
-			req.charge = saved.toJSON();
-			req.charge.phoneNumbers = getPhoneNumberObject(newUsers, null);
-
-			var fnArray = createWaterfallArray(req, res);
-
-			// execute the functions
-			async.waterfall(fnArray);
-
-		});
+	var venmoRequestBodies = createRequestBodies(req.charge);
+	issueAllVenmoCharges(venmoRequestBodies, req.session.user.access_token).then(function(results) {
+			console.log('Received all venmo responses!');
+			console.log('Processing venmo responses...')
+			var transactionBodies = createTransactionBodies(results, req.charge);
+			saveAllTransactions(transactionBodies).then(function(results) {
+				var transactionIds = _.map(results, function(result) {
+					return result.value._id;
+				});
+				Charge.findOneAndUpdate({_id: req.charge._id}, {$pushAll: {transactions: transactionIds}}, function (err, charge){
+							console.log('finalized all charges!!');
+							// TODO: Parker
+							// do a deep populate on the charge object then send
+							// with io socket
+							io.emit('chargeCreated', charge); // for live update on client
+							res.send(charge);
+				});
+				// res.send(results);				
+			});
+			// res.send(results);
 	});
 });
 
-function createWaterfallArray(req, res) {
-	var charge = req.charge;
-	var numbers = charge.phoneNumbers;
-	var transIds = [];
-	var funcArray = [];
+// returns promise that resolves when all charges have resolved
+// resolve or reject, must check status upon return of this method
+function issueAllVenmoCharges (venmoBodyArray, access_token) {
+	console.log('Charge count: ' + venmoBodyArray.length);
+	return Q.allSettled(venmoBodyArray.map(function(venmoBody, index) {
+		return issueVenmoChargeAsynch(venmoBody, index, access_token);
+	}));
+}
 
-	// first function in waterfall function array
-	var f = function (next) {
-		var transactionIds = [];
-		next(null, transactionIds);
-	};
+// asynch part of the function, will create a promise and return it
+// on a per charge basis
+function issueVenmoChargeAsynch(venmoBody, index, access_token) {
+	var deferred = Q.defer();
+	venmoBody.access_token = access_token;
+	request.post(BASE_URL, {form: venmoBody}, function (err, resp, receipt) {
+		console.log('received Venmo response ' + index);
+		receipt = JSON.parse(receipt);
+		if (err || receipt.error) deferred.reject(receipt);
+		else deferred.resolve(receipt);			
+	});
 
-	funcArray.push(f);
+	return deferred.promise;
+}
 
-	// create individual functions for each request to venmo server
-	for (var i = 0; i < numbers.length; i++) {
-
-		var body = {
-			access_token: req.session.user.access_token,
-			phone: numbers[i].phoneNumber, // COMES FROM PHONE ARRAY
-			note: charge.description, // req.charge.description
-			amount: charge.individualTotal, // req.charge.individualTotal
-			audience: charge.audience// req.charge.audience
-		};			
-
-		var f = createFunctionInArray(charge, body, i);
-		
-		funcArray.push(f);
-
+// creates individual request bodies to be sent to
+// venmo server
+function createRequestBodies(charge) {
+	var toRet = [];
+	for (var i = 0; i < charge.phoneNumbers.length; i++) {
+		var amt = charge.individualTotal;
+		amt = (amt < 0) ? amt : amt * -1; // can only do charges
+		amt = amt.toFixed(2); // only two decimals
+		console.log('amount: ' + amt);
+		var obj = {
+					phone: charge.phoneNumbers[i].phoneNumber,
+					note: charge.description,
+					amount: amt,
+					audience: charge.audience
+					};
+		toRet.push(obj);
 	}
 
-	// final function in waterfall
-	var lastFunction = function (transactionIds) {
-		Charge.findOneAndUpdate({_id: req.charge._id}, {$pushAll: {transactions: transactionIds}}, function (err, charge){
-			console.log('finalized charges!!');
-
-			// TODO: Parker
-			// do a deep populate on the charge object then send
-			// with io socket
-			io.emit('chargeCreated', charge); // for live update on client
-			res.send(charge);
-		}); 
-	};
-
-	funcArray.push(lastFunction);
-
-	return funcArray;
-
-};
-
-// creates venmo_charge function to send in waterfall
-function createFunctionInArray(charge, venmoBody, index) {
-
-	var f = function(transactionIds, next) {
-
-		request.post(BASE_URL, {form: venmoBody}, function (err, resp, receipt) {
-			console.log('received Venmo response ' + index);
-			receipt = JSON.parse(receipt);
-
-			var transactionObject = {
-				phoneNumber: charge.phoneNumbers[index].phoneNumber,
-				paymentId: receipt.data.payment.id,
-				note: receipt.data.payment.note,
-				status: receipt.data.payment.status, // should be pending
-				dateCreated: receipt.data.date_created,
-				group: charge.phoneNumbers[index].groupId, 
-				charge: charge._id,
-				userExists: true
-			};
-
-
-			if (err) 
-				transactionObject.errorMsg = err.message;
-
-			// handle case where phone number is not assoc. with a venmo
-			// account
-			if (receipt.data.payment.target.user == null) {
-				transactionObject.userExists = false;
-			}
-
-			var trans = new Transaction(transactionObject);
-
-			trans.save(function (err, saved) {
-				transactionIds.push(saved._id);
-				console.log('(Charge ' + index + ') Charge to ' + charge.phoneNumbers[index].phoneNumber + ': COMPLETE');
-				next(null, transactionIds);	
-			});
-
-		});	
-	};
-
-	return f;
-
+	return toRet;
 }
+
+function saveAllTransactions(transactionBodies) {
+	console.log('Transaction count: ' + transactionBodies.length);
+	return Q.allSettled(transactionBodies.map(function(transactionBody, index) {
+		return saveAllTransactionsAsynch(transactionBody, index);
+	}));
+}
+
+
+function saveAllTransactionsAsynch(transactionBody, index) {
+	var deferred = Q.defer();
+	var trans = new Transaction(transactionBody);
+
+	trans.save(function (err, saved) {
+		if (err) deferred.reject(err);
+		else deferred.resolve(saved);				
+	});
+
+	return deferred.promise;
+}
+
+function createTransactionBodies(results, charge) {
+	var toRet = [];
+	results.forEach(function(result) {
+		var transaction = {};
+		if (result.reason) { // error from venmo!
+			transaction.errorMsg = 'Error, charge did not issue: ' + result.reason.error.message;
+			transaction.username = 'Unknown';
+		} else { // it worked, now check if user in venmo system
+			if (result.value.data.payment.target.user == null) {
+				transaction.errorMsg = 'Charge issued succesfully, but user not found in system. Check phone number';
+				transaction.userExists = false;
+			} else {
+				transaction.username = result.value.data.payment.target.user.display_name;	
+			}
+			// add other props to transaction object
+			transaction.phoneNumber = result.value.data.payment.target.phone;
+			transaction.paymentId = result.value.data.payment.id;
+			transaction.note = result.value.data.payment.note;
+			transaction.status = result.value.data.payment.status;
+			transaction.charge = charge._id;
+			// TODO: Get UsergroupID
+			// transaction.group = charge.phoneNumbers[] 
+		}		
+		toRet.push(transaction);
+	});
+
+	return toRet;
+}
+
+// will add users to a charge after the charge has been initiated
+// router.put('/:chargeId', function (req, res, next){
+// 	var newUsers = req.body.targets;
+
+// 	Charge.findOne({_id: req.params.chargeId}, function (err, charge) {
+// 		charge.addedUsers = _.union(charge.addedUsers, newUsers);
+// 		charge.total += (newUsers.length * charge.individualTotal);
+// 		charge.save(function (err, saved) {
+// 			console.log('adding individual transaction to charge...')
+
+// 			// stage vars for the venmo api
+// 			req.charge = saved.toJSON();
+// 			req.charge.phoneNumbers = getPhoneNumberObject(newUsers, null);
+
+// 			var fnArray = createWaterfallArray(req, res);
+
+// 			// execute the functions
+// 			async.waterfall(fnArray);
+
+// 		});
+// 	});
+// });
 
 // deletes all transactions associated with a charge, then removes
 // the charge
@@ -229,16 +243,6 @@ function getPhoneNumberObject(members, groupId) {
 	});
 
 	return toRet;
-}
-
-// function that returns the first function variable for my waterfall
-// sequence when handling multiple async venmo requests
-function getInitialWaterfallFunction() {
-	var f = function (next) {
-		var transactionIds = [];
-		next(null, transactionIds);
-	};
-	return f;
 }
 
 module.exports = router;
